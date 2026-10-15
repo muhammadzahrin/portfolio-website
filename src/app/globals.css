@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+.dark {
+  /* Oceanic Cyber-Glass (Deep Dark Blue, Emerald Green, and Aqua Cyan) */
+  --bg-canvas: #020712;
+  --bg-glass: rgba(5, 15, 30, 0.42);
+  --bg-glass-solid-fallback: #071324;
+  --bg-glass-card: rgba(5, 15, 30, 0.42);
+  --bg-glass-card-hover: rgba(9, 24, 46, 0.55);
+  --border-glass: rgba(56, 189, 248, 0.22);
+  --border-glass-edge: rgba(52, 211, 153, 0.32);
+  --border-glass-subtle: rgba(56, 189, 248, 0.18);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent-sky: #38bdf8;
+  --accent-cyan: #22d3ee;
+  --accent-green: #34d399;
+  --aero-badge-bg: rgba(6, 182, 212, 0.18);
+  --aero-badge-border: rgba(52, 211, 153, 0.35);
+}
+
+/* Base Body Styles */
+html {
+  scroll-behavior: smooth;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* Apple Typography Optical Tuning */
+h1, h2, h3, h4 {
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+h1 {
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+p {
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* High-Performance Lightweight Glassmorphism (Same transparency for all panels) */
+.glass-surface,
+.glass-card-surface {
+  background-color: var(--bg-glass);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid var(--border-glass);
+}
+
+.glass-card-surface {
+  position: relative;
+  border-top: 1px solid var(--border-glass-edge);
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass-surface,
+  .glass-card-surface {
+    background-color: var(--bg-glass-solid-fallback);
+    border-color: rgba(56, 189, 248, 0.25);
+  }
+}
+
+/* Accessibility: Reduced Transparency Support */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface,
+  .glass-card-surface {
+    background-color: var(--bg-glass-solid-fallback) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Accessibility: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Smooth GPU-accelerated press effect */
+.apple-press {
+  transition: transform 120ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+.apple-press:active {
+  transform: scale(0.98);
+}
+
+/* Focus styles for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+/* Hardware-Accelerated Vignette Breathing Keyframes */
+@keyframes vignettePulse1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate3d(20px, -15px, 0) scale(1.25);
+    opacity: 0.85;
+  }
+}
+
+@keyframes vignettePulse2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1.2);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate3d(-20px, 20px, 0) scale(0.88);
+    opacity: 0.35;
+  }
+}
+
+@keyframes vignettePulse3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(15px, 25px, 0) scale(1.3);
+    opacity: 0.9;
+  }
+}
+
+.animate-vignette-1 {
+  animation: vignettePulse1 11s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-vignette-2 {
+  animation: vignettePulse2 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-vignette-3 {
+  animation: vignettePulse3 7s ease-in-out infinite;
+  will-change: transform, opacity;
+}
