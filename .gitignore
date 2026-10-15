@@ -1,0 +1,8 @@
+# Ignore local Antigravity settings and caches
+.antigravity/
+.ai_cache/
+.env
+
+# Ignore node_modules, build folders, or OS files depending on your stack
+node_modules/
+.DS_Store
