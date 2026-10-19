@@ -3,6 +3,7 @@ import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { PS3Background } from '@/components/layout/PS3Background';
+import { DebugPanel } from '@/components/ui/DebugPanel';
 
 export const metadata: Metadata = {
   title: 'Zahrin | Personal Portfolio',
@@ -33,6 +34,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <DebugPanel />
       </body>
     </html>
   );

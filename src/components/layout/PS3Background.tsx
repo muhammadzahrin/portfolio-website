@@ -14,6 +14,7 @@ import React, { useEffect, useRef } from 'react';
  */
 export function PS3Background() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [animationActive, setAnimationActive] = React.useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -23,6 +24,23 @@ export function PS3Background() {
 
     let animationFrameId: number;
     let isPaused = false;
+    let isAnimationEnabled = true;
+
+    // Check saved debug preference
+    const savedBgState = localStorage.getItem('portfolio-debug-bg');
+    if (savedBgState !== null) {
+      isAnimationEnabled = savedBgState === 'true';
+      setAnimationActive(isAnimationEnabled);
+    }
+
+    const handleToggleBg = (e: Event) => {
+      const customEvent = e as CustomEvent<{ enabled: boolean }>;
+      isAnimationEnabled = customEvent.detail.enabled;
+      setAnimationActive(isAnimationEnabled);
+    };
+
+    window.addEventListener('portfolio:toggle-bg-animation', handleToggleBg);
+
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
@@ -125,7 +143,7 @@ export function PS3Background() {
     const render = (currentTime: number) => {
       animationFrameId = requestAnimationFrame(render);
 
-      if (isPaused) return;
+      if (isPaused || !isAnimationEnabled) return;
 
       const elapsed = currentTime - lastFrameTime;
       if (elapsed < fpsInterval) return;
@@ -242,7 +260,8 @@ export function PS3Background() {
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('portfolio:toggle-bg-animation', handleToggleBg);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -289,7 +308,7 @@ export function PS3Background() {
           </defs>
 
           {/* Group 1: Gentle Oceanic Sway 1 */}
-          <g className="animate-ray-1">
+          <g className="animate-ray-1" style={animationActive ? undefined : { animationPlayState: 'paused' }}>
             {/* Ray A: Angled down from upper left-center */}
             <polygon points="190,0 290,0 520,900 320,900" fill="url(#deepSeaRay1)" />
             {/* Ray C: Right shaft penetrating towards bottom right */}
@@ -299,7 +318,7 @@ export function PS3Background() {
           </g>
 
           {/* Group 2: Complementary Gentle Oceanic Sway 2 */}
-          <g className="animate-ray-2">
+          <g className="animate-ray-2" style={animationActive ? undefined : { animationPlayState: 'paused' }}>
             {/* Ray B: Central prominent beam */}
             <polygon points="480,0 600,0 880,900 680,900" fill="url(#deepSeaRay2)" />
             {/* Ray D: Far right angled shaft */}
