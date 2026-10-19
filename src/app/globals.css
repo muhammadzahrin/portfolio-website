@@ -99,9 +99,9 @@ p {
   }
 }
 
-/* Smooth GPU-accelerated press effect */
+/* Smooth GPU-accelerated press effect & instant snappy hover */
 .apple-press {
-  transition: transform 120ms ease, border-color 150ms ease, background-color 150ms ease;
+  transition: transform 80ms cubic-bezier(0.16, 1, 0.3, 1), border-color 75ms ease-out, background-color 75ms ease-out, color 75ms ease-out;
 }
 
 .apple-press:active {

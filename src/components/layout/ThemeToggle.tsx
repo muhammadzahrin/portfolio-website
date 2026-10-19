@@ -46,7 +46,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-      className="apple-press w-9 h-9 rounded-full glass-surface flex items-center justify-center text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 shadow-glass-sm"
+      className="apple-press w-9 h-9 rounded-full glass-surface flex items-center justify-center text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-75 ease-out focus-visible:ring-2 focus-visible:ring-sky-500 shadow-glass-sm"
     >
       {theme === 'light' ? (
         <MoonIcon className="w-4 h-4" />

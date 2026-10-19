@@ -29,7 +29,8 @@ export function GlassCard({
         overflow-hidden
         border border-sky-400/20
         transition-colors
-        duration-150
+        duration-75
+        ease-out
         ${hoverEffect ? 'hover:border-sky-400/45 hover:bg-slate-900/40' : ''}
         ${interactive ? 'apple-press cursor-pointer' : ''}
         ${className}

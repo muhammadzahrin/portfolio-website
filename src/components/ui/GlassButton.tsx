@@ -39,7 +39,7 @@ export function GlassButton({
   const variantStyles = {
     primary: `
       bg-gradient-to-b from-sky-400 via-sky-500 to-sky-600
-      hover:from-sky-300 hover:to-sky-500
+      hover:from-sky-300 hover:to-sky-500 hover:brightness-110
       text-white
       shadow-[0_4px_14px_rgba(2,132,199,0.35),inset_0_1px_1px_rgba(255,255,255,0.7)]
       border border-sky-300/60
@@ -49,8 +49,8 @@ export function GlassButton({
     secondary: `
       glass-surface
       text-slate-100
-      hover:bg-slate-800/60
-      hover:border-sky-400/45
+      hover:bg-slate-800/70
+      hover:border-sky-400/50
       border border-sky-400/25
     `,
     ghost: `
@@ -66,7 +66,7 @@ export function GlassButton({
     inline-flex items-center justify-center gap-2
     rounded-full font-medium
     apple-press
-    transition-colors duration-150
+    transition-all duration-75 ease-out
     focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2
     select-none
     ${sizeStyles[size]}

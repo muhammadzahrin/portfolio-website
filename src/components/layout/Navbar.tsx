@@ -38,7 +38,7 @@ export function Navbar() {
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 flex items-center justify-center text-white shadow-sm shadow-sky-500/40">
             <SparklesIcon className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-sky-400 transition-colors">
+          <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-sky-400 transition-colors duration-75 ease-out">
             {siteConfig.name}
           </span>
         </Link>
@@ -52,7 +52,7 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={`
-                  relative px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 apple-press
+                  relative px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors duration-75 ease-out apple-press
                   focus-visible:ring-2 focus-visible:ring-sky-500
                   ${
                     isActive
@@ -97,7 +97,7 @@ export function Navbar() {
                   href={item.href}
                   onClick={closeMobileMenu}
                   className={`
-                    px-4 py-2.5 rounded-xl text-sm font-medium transition-colors apple-press flex items-center justify-between
+                    px-4 py-2.5 rounded-xl text-sm font-medium transition-colors duration-75 ease-out apple-press flex items-center justify-between
                     ${
                       isActive
                         ? 'text-sky-700 dark:text-sky-300 bg-sky-500/15 dark:bg-sky-400/20'
