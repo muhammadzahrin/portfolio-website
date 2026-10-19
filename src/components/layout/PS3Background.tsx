@@ -3,12 +3,14 @@
 import React, { useEffect, useRef } from 'react';
 
 /**
- * PS3 Dynamic Harmonic Wave Background + Multi-Point Breathing Vignettes
- * Ultra-optimized 60fps canvas engine:
- * - 0 network data usage (100% client-side math)
- * - Zero software shadowBlur convolutions (eliminates GPU bottlenecks)
- * - Hardware-accelerated CSS breathing vignettes in vibrant emerald green and dark blue
- * - Automatic pause when tab is inactive for zero battery drain
+ * Authentic PS3 XMB Dynamic Wave Background + Deep Sea Underwater Light Rays
+ * 
+ * Features:
+ * - Oceanic crepuscular sunbeams (god rays) penetrating down from the surface into the abyss.
+ * - Authentic 3D-style PS3 ribbon waves with top/bottom boundaries, twisting mesh,
+ *   and delicate internal luminous silk filament strings.
+ * - Sparse bioluminescent bubbles strictly tethered to the wave currents.
+ * - Hardware-accelerated, zero heavy blur-filters, locked 60+ FPS performance.
  */
 export function PS3Background() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -37,70 +39,83 @@ export function PS3Background() {
     window.addEventListener('resize', handleResize, { passive: true });
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Subtle floating PS3 ambient dust motes (lightweight, no shadowBlur)
-    const isMobile = width < 768;
-    const particleCount = isMobile ? 14 : 24;
-    const particles = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 1.8 + 0.8,
-      speedX: (Math.random() - 0.5) * 0.3,
-      speedY: -Math.random() * 0.35 - 0.1,
-      alpha: Math.random() * 0.4 + 0.2,
-      pulse: Math.random() * Math.PI,
-    }));
-
-    // 4 overlapping PS3 harmonic ribbon lines
+    // Primary & Secondary PS3 Ribbon Wave Parameters
     const ribbons = [
       {
-        yOffsetRatio: 0.48,
-        amplitude1: 45,
-        amplitude2: 30,
-        frequency1: 0.002,
-        frequency2: 0.0035,
-        speed: 0.0008,
-        phase: 0,
-        lineWidth: 2.2,
-        strokeGradient: ['rgba(34, 211, 238, 0.7)', 'rgba(52, 211, 153, 0.65)', 'rgba(56, 189, 248, 0.2)'],
-        fillGradient: ['rgba(6, 182, 212, 0.06)', 'rgba(16, 185, 129, 0.04)', 'transparent'],
+        // Ribbon 1: Foreground Electric Aqua-Cyan & Emerald Silk Wave
+        yRatio: 0.52,
+        amp1: 52,
+        amp2: 32,
+        freq1: 0.0018,
+        freq2: 0.0032,
+        speed1: 0.0011,
+        speed2: 0.0007,
+        phase1: 0.2,
+        phase2: 1.4,
+        baseWidth: 55,
+        twistFreq: 0.0022,
+        twistSpeed: 0.0014,
+        twistPhase: 0.5,
+        fillGradient: ['rgba(34, 211, 238, 0.08)', 'rgba(52, 211, 153, 0.05)', 'transparent'],
+        edgeGradients: [
+          'rgba(34, 211, 238, 0.85)', // Top edge (bright cyan)
+          'rgba(52, 211, 153, 0.80)', // Bottom edge (bright emerald)
+        ],
+        filamentAlpha: 0.28,
       },
       {
-        yOffsetRatio: 0.55,
-        amplitude1: 55,
-        amplitude2: 35,
-        frequency1: 0.0016,
-        frequency2: 0.0026,
-        speed: 0.001,
-        phase: 1.8,
-        lineWidth: 2.0,
-        strokeGradient: ['rgba(52, 211, 153, 0.75)', 'rgba(34, 211, 238, 0.65)', 'rgba(14, 165, 233, 0.25)'],
-        fillGradient: ['rgba(16, 185, 129, 0.06)', 'rgba(6, 182, 212, 0.03)', 'transparent'],
-      },
-      {
-        yOffsetRatio: 0.42,
-        amplitude1: 40,
-        amplitude2: 40,
-        frequency1: 0.0024,
-        frequency2: 0.0018,
-        speed: 0.0007,
-        phase: 3.4,
-        lineWidth: 1.8,
-        strokeGradient: ['rgba(56, 189, 248, 0.6)', 'rgba(110, 231, 183, 0.55)', 'rgba(34, 211, 238, 0.2)'],
-        fillGradient: ['rgba(34, 211, 238, 0.05)', 'rgba(52, 211, 153, 0.03)', 'transparent'],
-      },
-      {
-        yOffsetRatio: 0.62,
-        amplitude1: 60,
-        amplitude2: 25,
-        frequency1: 0.0014,
-        frequency2: 0.0028,
-        speed: 0.0009,
-        phase: 4.8,
-        lineWidth: 2.4,
-        strokeGradient: ['rgba(16, 185, 129, 0.7)', 'rgba(14, 165, 233, 0.65)', 'rgba(5, 150, 105, 0.25)'],
-        fillGradient: ['rgba(16, 185, 129, 0.05)', 'rgba(14, 165, 233, 0.03)', 'transparent'],
+        // Ribbon 2: Background Harmonic Deep Sapphire & Electric Sky Ribbon
+        yRatio: 0.62,
+        amp1: 65,
+        amp2: 28,
+        freq1: 0.0014,
+        freq2: 0.0026,
+        speed1: 0.0009,
+        speed2: 0.0008,
+        phase1: 3.1,
+        phase2: 2.2,
+        baseWidth: 48,
+        twistFreq: 0.0018,
+        twistSpeed: 0.0011,
+        twistPhase: 2.8,
+        fillGradient: ['rgba(56, 189, 248, 0.06)', 'rgba(14, 165, 233, 0.04)', 'transparent'],
+        edgeGradients: [
+          'rgba(56, 189, 248, 0.75)', // Top edge (sky blue)
+          'rgba(34, 211, 238, 0.65)', // Bottom edge (cyan)
+        ],
+        filamentAlpha: 0.22,
       },
     ];
+
+    // Helper: calculate wave coordinates (midline, top boundary, bottom boundary) at given x and time
+    const getWaveCoords = (x: number, t: number, r: typeof ribbons[0]) => {
+      const sin1 = Math.sin(x * r.freq1 + t * r.speed1 + r.phase1);
+      const cos1 = Math.cos(x * r.freq2 - t * r.speed2 + r.phase2);
+      const mid = height * r.yRatio + sin1 * r.amp1 + cos1 * r.amp2;
+
+      // Ribbon twist factor: varies width from pinched edge (flat) to broadside (open)
+      const twist = Math.sin(x * r.twistFreq + t * r.twistSpeed + r.twistPhase);
+      const halfWidth = r.baseWidth * (0.28 + 0.72 * (0.5 + 0.5 * twist));
+
+      return {
+        mid,
+        top: mid - halfWidth,
+        bottom: mid + halfWidth,
+      };
+    };
+
+    // Sparse bioluminescent bubbles strictly scattered along the wave lines (8-10 bubbles total)
+    const bubbleCount = width < 768 ? 7 : 10;
+    const bubbles = Array.from({ length: bubbleCount }, (_, i) => ({
+      x: Math.random() * width,
+      ribbonIndex: i % 2,
+      offsetY: (Math.random() - 0.5) * 36, // Hover within +/- 18px of the ribbon center
+      speedX: Math.random() * 0.25 + 0.15,
+      size: Math.random() * 1.4 + 1.0,
+      alpha: Math.random() * 0.35 + 0.35,
+      pulse: Math.random() * Math.PI * 2,
+      color: i % 2 === 0 ? 'rgba(56, 189, 248,' : 'rgba(52, 211, 153,',
+    }));
 
     let time = 0;
 
@@ -109,73 +124,103 @@ export function PS3Background() {
         time += 1;
         ctx.clearRect(0, 0, width, height);
 
-        // Render fluid PS3 ribbon waves
+        const step = 14; // Ultra smooth curve evaluation step
+
+        // Render each authentic 3D PS3 ribbon wave
         ribbons.forEach((ribbon) => {
-          const baseHeight = height * ribbon.yOffsetRatio;
-          const currentPhase = time * ribbon.speed + ribbon.phase;
-
-          // Step of 16px is butter smooth on 60Hz and 120Hz displays with 1/2 CPU cost
-          const step = 16;
-
-          // Fill subtle atmospheric translucent ribbon
+          // 1. Fill translucent twisting silk ribbon mesh between top and bottom edges
           ctx.beginPath();
-          ctx.moveTo(0, height);
-          ctx.lineTo(0, baseHeight);
           for (let x = 0; x <= width + step; x += step) {
-            const sin1 = Math.sin(x * ribbon.frequency1 + currentPhase);
-            const sin2 = Math.cos(x * ribbon.frequency2 - currentPhase * 0.7);
-            const y = baseHeight + sin1 * ribbon.amplitude1 + sin2 * ribbon.amplitude2;
-            ctx.lineTo(x, y);
+            const { top } = getWaveCoords(x, time, ribbon);
+            if (x === 0) ctx.moveTo(x, top);
+            else ctx.lineTo(x, top);
           }
-          ctx.lineTo(width, height);
+          for (let x = width + step; x >= 0; x -= step) {
+            const { bottom } = getWaveCoords(x, time, ribbon);
+            ctx.lineTo(x, bottom);
+          }
           ctx.closePath();
 
-          const fillGrad = ctx.createLinearGradient(0, baseHeight - 60, width, height);
-          fillGrad.addColorStop(0, ribbon.fillGradient[0]);
-          fillGrad.addColorStop(0.5, ribbon.fillGradient[1]);
-          fillGrad.addColorStop(1, ribbon.fillGradient[2]);
-          ctx.fillStyle = fillGrad;
+          const ribbonGrad = ctx.createLinearGradient(0, 0, width, 0);
+          ribbonGrad.addColorStop(0, ribbon.fillGradient[0]);
+          ribbonGrad.addColorStop(0.5, ribbon.fillGradient[1]);
+          ribbonGrad.addColorStop(1, ribbon.fillGradient[2]);
+          ctx.fillStyle = ribbonGrad;
           ctx.fill();
 
-          // Stroke crisp luminous wave line
-          ctx.beginPath();
-          for (let x = 0; x <= width + step; x += step) {
-            const sin1 = Math.sin(x * ribbon.frequency1 + currentPhase);
-            const sin2 = Math.cos(x * ribbon.frequency2 - currentPhase * 0.7);
-            const y = baseHeight + sin1 * ribbon.amplitude1 + sin2 * ribbon.amplitude2;
-            if (x === 0) {
-              ctx.moveTo(x, y);
-            } else {
-              ctx.lineTo(x, y);
-            }
-          }
+          // 2. Render contour silk filaments (5 parallel strings inside the ribbon)
+          // u = 0.0 (top edge), 0.25, 0.5 (spine), 0.75, 1.0 (bottom edge)
+          const filamentFractions = [0.0, 0.25, 0.5, 0.75, 1.0];
 
-          const strokeGrad = ctx.createLinearGradient(0, 0, width, 0);
-          strokeGrad.addColorStop(0, ribbon.strokeGradient[0]);
-          strokeGrad.addColorStop(0.5, ribbon.strokeGradient[1]);
-          strokeGrad.addColorStop(1, ribbon.strokeGradient[2]);
-          ctx.strokeStyle = strokeGrad;
-          ctx.lineWidth = ribbon.lineWidth;
-          ctx.stroke();
+          filamentFractions.forEach((u) => {
+            ctx.beginPath();
+            for (let x = 0; x <= width + step; x += step) {
+              const { top, bottom } = getWaveCoords(x, time, ribbon);
+              const y = top + (bottom - top) * u;
+              if (x === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+
+            const strokeGrad = ctx.createLinearGradient(0, 0, width, 0);
+            if (u === 0.0) {
+              // Bright top boundary
+              strokeGrad.addColorStop(0, 'rgba(56, 189, 248, 0.2)');
+              strokeGrad.addColorStop(0.5, ribbon.edgeGradients[0]);
+              strokeGrad.addColorStop(1, 'rgba(34, 211, 238, 0.15)');
+              ctx.lineWidth = 1.8;
+            } else if (u === 1.0) {
+              // Bright bottom boundary
+              strokeGrad.addColorStop(0, 'rgba(52, 211, 153, 0.2)');
+              strokeGrad.addColorStop(0.5, ribbon.edgeGradients[1]);
+              strokeGrad.addColorStop(1, 'rgba(16, 185, 129, 0.15)');
+              ctx.lineWidth = 1.8;
+            } else if (u === 0.5) {
+              // Glowing center spine
+              strokeGrad.addColorStop(0, 'transparent');
+              strokeGrad.addColorStop(0.5, `rgba(186, 230, 253, ${ribbon.filamentAlpha * 1.4})`);
+              strokeGrad.addColorStop(1, 'transparent');
+              ctx.lineWidth = 1.2;
+            } else {
+              // Subtle contour silk threads
+              strokeGrad.addColorStop(0, 'transparent');
+              strokeGrad.addColorStop(0.5, `rgba(125, 211, 252, ${ribbon.filamentAlpha})`);
+              strokeGrad.addColorStop(1, 'transparent');
+              ctx.lineWidth = 0.8;
+            }
+
+            ctx.strokeStyle = strokeGrad;
+            ctx.stroke();
+          });
         });
 
-        // Render ambient floating sparkles (zero shadowBlur for silky 60fps)
-        particles.forEach((p) => {
-          p.x += p.speedX;
-          p.y += p.speedY;
-          p.pulse += 0.02;
+        // 3. Render sparse bioluminescent bubbles drifting strictly near the lines
+        bubbles.forEach((b) => {
+          b.x += b.speedX;
+          b.pulse += 0.025;
 
-          if (p.y < -10) {
-            p.y = height + 10;
-            p.x = Math.random() * width;
+          // Wrap around seamlessly
+          if (b.x > width + 20) {
+            b.x = -20;
+            b.offsetY = (Math.random() - 0.5) * 36;
           }
-          if (p.x < -10) p.x = width + 10;
-          if (p.x > width + 10) p.x = -10;
 
-          const currentAlpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+          // Tethered directly to its assigned wave ribbon
+          const currentRibbon = ribbons[b.ribbonIndex];
+          const coords = getWaveCoords(b.x, time, currentRibbon);
+          const y = coords.mid + b.offsetY + Math.sin(b.pulse) * 3;
+
+          const currentAlpha = b.alpha * (0.6 + 0.4 * Math.sin(b.pulse));
+
+          // Draw tiny micro-bubble core
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(186, 230, 253, ${currentAlpha})`;
+          ctx.arc(b.x, y, b.size, 0, Math.PI * 2);
+          ctx.fillStyle = `${b.color} ${currentAlpha})`;
+          ctx.fill();
+
+          // Subtle ambient glow ring around bubble
+          ctx.beginPath();
+          ctx.arc(b.x, y, b.size * 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = `${b.color} ${currentAlpha * 0.25})`;
           ctx.fill();
         });
       }
@@ -198,44 +243,73 @@ export function PS3Background() {
       aria-hidden="true"
     >
       {/* 
-        MULTI-POINT VIVID BREATHING VIGNETTES
-        Hardware accelerated with pure CSS keyframes in globals.css
+        UNDERWATER SUNBEAM LIGHT RAYS (PENETRATING DEEP SEA WATER)
+        Hardware-accelerated SVG light shafts fanning down into the deep ocean.
+        Zero heavy blur filters — smooth 60-120 FPS.
       */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Ocean surface ambient glow at the very top */}
+        <div className="absolute top-0 inset-x-0 h-44 bg-gradient-to-b from-cyan-400/18 via-sky-500/08 to-transparent pointer-events-none" />
 
-      {/* 1. Top-Left: Deep Oceanic Sapphire Blue & Cyan Pulse */}
-      <div
-        className="absolute -top-[12%] -left-[10%] w-[55vw] max-w-[750px] h-[55vw] max-h-[750px] rounded-full bg-gradient-to-br from-sky-500/35 via-cyan-600/25 to-transparent blur-[70px] animate-vignette-1"
-      />
+        {/* Crepuscular God Rays SVG */}
+        <svg
+          className="absolute top-0 left-0 w-full h-[90vh] pointer-events-none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="deepSeaRay1" x1="0%" y1="0%" x2="22%" y2="100%">
+              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.24" />
+              <stop offset="35%" stopColor="#22d3ee" stopOpacity="0.10" />
+              <stop offset="85%" stopColor="#0284c7" stopOpacity="0" />
+            </linearGradient>
 
-      {/* 2. Top-Right: Vibrant Emerald Green Pulse */}
-      <div
-        className="absolute -top-[10%] -right-[8%] w-[50vw] max-w-[700px] h-[50vw] max-h-[700px] rounded-full bg-gradient-to-bl from-emerald-500/40 via-teal-600/25 to-transparent blur-[75px] animate-vignette-2"
-      />
+            <linearGradient id="deepSeaRay2" x1="8%" y1="0%" x2="32%" y2="100%">
+              <stop offset="0%" stopColor="#34d399" stopOpacity="0.18" />
+              <stop offset="40%" stopColor="#38bdf8" stopOpacity="0.08" />
+              <stop offset="90%" stopColor="#0f172a" stopOpacity="0" />
+            </linearGradient>
 
-      {/* 3. Center-Left: Electric Teal & Emerald Glow */}
-      <div
-        className="absolute top-[32%] -left-[10%] w-[45vw] max-w-[600px] h-[45vw] max-h-[600px] rounded-full bg-gradient-to-r from-teal-400/30 via-emerald-500/25 to-transparent blur-[65px] animate-vignette-3"
-      />
+            <linearGradient id="deepSeaRay3" x1="0%" y1="0%" x2="16%" y2="100%">
+              <stop offset="0%" stopColor="#67e8f9" stopOpacity="0.22" />
+              <stop offset="30%" stopColor="#0284c7" stopOpacity="0.09" />
+              <stop offset="80%" stopColor="#020712" stopOpacity="0" />
+            </linearGradient>
+          </defs>
 
-      {/* 4. Bottom-Right: Deep Royal Blue & Cyan Pulse */}
-      <div
-        className="absolute -bottom-[15%] -right-[12%] w-[60vw] max-w-[800px] h-[60vw] max-h-[800px] rounded-full bg-gradient-to-tl from-sky-600/35 via-blue-800/30 to-transparent blur-[85px] animate-vignette-1"
-      />
+          {/* Group 1: Gentle Oceanic Sway 1 */}
+          <g className="animate-ray-1">
+            {/* Ray A: Angled down from upper left-center */}
+            <polygon points="190,0 290,0 520,900 320,900" fill="url(#deepSeaRay1)" />
+            {/* Ray C: Right shaft penetrating towards bottom right */}
+            <polygon points="840,0 950,0 1280,880 1100,880" fill="url(#deepSeaRay3)" />
+            {/* Ray E: Far left subtle accent */}
+            <polygon points="0,0 70,0 210,750 90,750" fill="url(#deepSeaRay2)" />
+          </g>
 
-      {/* 5. Bottom-Left: Lush Emerald Green Pulse */}
-      <div
-        className="absolute bottom-[2%] left-[18%] w-[45vw] max-w-[600px] h-[45vw] max-h-[600px] rounded-full bg-gradient-to-tr from-emerald-500/30 via-cyan-500/20 to-transparent blur-[70px] animate-vignette-2"
-      />
+          {/* Group 2: Complementary Gentle Oceanic Sway 2 */}
+          <g className="animate-ray-2">
+            {/* Ray B: Central prominent beam */}
+            <polygon points="480,0 600,0 880,900 680,900" fill="url(#deepSeaRay2)" />
+            {/* Ray D: Far right angled shaft */}
+            <polygon points="1080,0 1170,0 1420,800 1300,800" fill="url(#deepSeaRay1)" />
+          </g>
+        </svg>
+      </div>
 
-      {/* 6. Ever-moving PS3 Dynamic Ribbon Waves Canvas */}
+      {/* 
+        AUTHENTIC PS3 DYNAMIC RIBBON WAVES CANVAS
+        Renders the twisting ribbon mesh, contour silk strings, and tethered bubbles.
+      */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full block"
       />
 
-      {/* 7. Subtle edge vignette */}
+      {/* Deep-sea oceanic bottom depth vignette */}
       <div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_55%,rgba(2,7,18,0.55)_100%)] pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-t from-[#020712] via-transparent to-transparent opacity-70 pointer-events-none"
       />
     </div>
   );

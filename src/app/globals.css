@@ -114,51 +114,38 @@ p {
   outline-offset: 2px;
 }
 
-/* Hardware-Accelerated Vignette Breathing Keyframes */
-@keyframes vignettePulse1 {
+/* Deep Sea Underwater Sunbeam Light Rays Drift */
+@keyframes rayShimmer1 {
   0%, 100% {
-    transform: translate3d(0, 0, 0) scale(0.9);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translate3d(20px, -15px, 0) scale(1.25);
-    opacity: 0.85;
-  }
-}
-
-@keyframes vignettePulse2 {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1.2);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translate3d(-20px, 20px, 0) scale(0.88);
     opacity: 0.35;
-  }
-}
-
-@keyframes vignettePulse3 {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(0.95);
-    opacity: 0.45;
+    transform: translate3d(0, 0, 0) skewX(-1.5deg);
   }
   50% {
-    transform: translate3d(15px, 25px, 0) scale(1.3);
-    opacity: 0.9;
+    opacity: 0.65;
+    transform: translate3d(12px, 0, 0) skewX(0.5deg);
   }
 }
 
-.animate-vignette-1 {
-  animation: vignettePulse1 11s ease-in-out infinite;
+@keyframes rayShimmer2 {
+  0%, 100% {
+    opacity: 0.45;
+    transform: translate3d(0, 0, 0) skewX(1deg);
+  }
+  50% {
+    opacity: 0.22;
+    transform: translate3d(-10px, 0, 0) skewX(-1.2deg);
+  }
+}
+
+.animate-ray-1 {
+  animation: rayShimmer1 14s ease-in-out infinite;
+  transform-origin: top center;
   will-change: transform, opacity;
 }
 
-.animate-vignette-2 {
-  animation: vignettePulse2 9s ease-in-out infinite;
+.animate-ray-2 {
+  animation: rayShimmer2 18s ease-in-out infinite;
+  transform-origin: top center;
   will-change: transform, opacity;
 }
 
-.animate-vignette-3 {
-  animation: vignettePulse3 7s ease-in-out infinite;
-  will-change: transform, opacity;
-}

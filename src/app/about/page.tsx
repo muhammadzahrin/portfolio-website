@@ -118,7 +118,7 @@ export default function AboutPage() {
                 {category.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-900/45 text-slate-200 border border-sky-400/20 shadow-sm backdrop-blur-sm"
+                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-900/60 text-slate-200 border border-sky-400/20 shadow-sm"
                   >
                     {skill}
                   </span>
