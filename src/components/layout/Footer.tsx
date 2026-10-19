@@ -81,10 +81,16 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto mt-4 px-2 text-center">
+      <div className="max-w-5xl mx-auto mt-4 px-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
         <p className="text-[11px] text-slate-400 dark:text-slate-500">
           © {currentYear} {siteConfig.name}. All project names and descriptions are template placeholders.
         </p>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-wider px-2.5 py-0.5 rounded-full bg-slate-900/60 border border-sky-400/20 text-sky-400/90 shadow-sm select-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            v0.1.4
+          </span>
+        </div>
       </div>
     </footer>
   );

@@ -52,16 +52,22 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={`
-                  relative px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors duration-75 ease-out apple-press
+                  relative group/nav px-3.5 py-1.5 rounded-full text-sm font-medium apple-press overflow-hidden
                   focus-visible:ring-2 focus-visible:ring-sky-500
                   ${
                     isActive
                       ? 'text-sky-300 bg-sky-500/20 shadow-inner border border-sky-400/30'
-                      : 'text-slate-300 hover:text-white hover:bg-white/10'
+                      : 'text-slate-300 hover:text-white'
                   }
                 `}
               >
-                {item.label}
+                {!isActive && (
+                  <span
+                    className="absolute inset-0 rounded-full bg-white/12 opacity-0 group-hover/nav:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="relative z-10">{item.label}</span>
               </Link>
             );
           })}

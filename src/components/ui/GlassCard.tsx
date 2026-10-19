@@ -24,19 +24,23 @@ export function GlassCard({
   return (
     <Component
       className={`
+        group/card relative
         glass-surface
         rounded-2xl
         overflow-hidden
         border border-sky-400/20
-        transition-colors
-        duration-75
-        ease-out
-        ${hoverEffect ? 'hover:border-sky-400/45 hover:bg-slate-900/40' : ''}
         ${interactive ? 'apple-press cursor-pointer' : ''}
         ${className}
       `}
       {...props}
     >
+      {/* GPU-Composited Hover Overlay: animates pure opacity to bypass backdrop-filter repaint */}
+      {hoverEffect && (
+        <div
+          className="absolute inset-0 rounded-2xl bg-slate-800/40 border border-sky-400/50 opacity-0 group-hover/card:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
+          aria-hidden="true"
+        />
+      )}
       <div className="relative z-10">{children}</div>
     </Component>
   );

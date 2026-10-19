@@ -39,7 +39,6 @@ export function GlassButton({
   const variantStyles = {
     primary: `
       bg-gradient-to-b from-sky-400 via-sky-500 to-sky-600
-      hover:from-sky-300 hover:to-sky-500 hover:brightness-110
       text-white
       shadow-[0_4px_14px_rgba(2,132,199,0.35),inset_0_1px_1px_rgba(255,255,255,0.7)]
       border border-sky-300/60
@@ -49,24 +48,21 @@ export function GlassButton({
     secondary: `
       glass-surface
       text-slate-100
-      hover:bg-slate-800/70
-      hover:border-sky-400/50
       border border-sky-400/25
     `,
     ghost: `
       bg-transparent
       text-slate-200
-      hover:bg-sky-500/15
       hover:text-white
       border border-transparent
     `,
   };
 
   const baseStyles = `
+    group/btn relative overflow-hidden
     inline-flex items-center justify-center gap-2
     rounded-full font-medium
     apple-press
-    transition-all duration-75 ease-out
     focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2
     select-none
     ${sizeStyles[size]}
@@ -74,6 +70,33 @@ export function GlassButton({
     ${disabled ? 'opacity-50 pointer-events-none' : ''}
     ${className}
   `;
+
+  const content = (
+    <>
+      {/* GPU-Composited Hover Overlays: zero repaint, pure compositor opacity */}
+      {variant === 'primary' && (
+        <span
+          className="absolute inset-0 rounded-full bg-white/18 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
+          aria-hidden="true"
+        />
+      )}
+      {variant === 'secondary' && (
+        <span
+          className="absolute inset-0 rounded-full bg-slate-800/65 border border-sky-400/50 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
+          aria-hidden="true"
+        />
+      )}
+      {variant === 'ghost' && (
+        <span
+          className="absolute inset-0 rounded-full bg-sky-500/15 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
+          aria-hidden="true"
+        />
+      )}
+      <span className="relative z-10 inline-flex items-center justify-center gap-2">
+        {children}
+      </span>
+    </>
+  );
 
   if (href) {
     if (external) {
@@ -85,13 +108,13 @@ export function GlassButton({
           className={baseStyles}
           aria-label={ariaLabel}
         >
-          {children}
+          {content}
         </a>
       );
     }
     return (
       <Link href={href} className={baseStyles} aria-label={ariaLabel}>
-        {children}
+        {content}
       </Link>
     );
   }
@@ -104,7 +127,7 @@ export function GlassButton({
       className={baseStyles}
       aria-label={ariaLabel}
     >
-      {children}
+      {content}
     </button>
   );
 }
