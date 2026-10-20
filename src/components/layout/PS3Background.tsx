@@ -3,10 +3,10 @@
 import React, { useEffect, useRef } from 'react';
 
 /**
- * Authentic PS3 XMB Dynamic Wave Background + Deep Sea Underwater Light Rays
+ * Authentic PS3 XMB Dynamic Wave Background
  * 
  * Features:
- * - Oceanic crepuscular sunbeams (god rays) penetrating down from the surface into the abyss.
+ * - Static gradient background: #081927 at the top of the screen to #020711 in the middle.
  * - Authentic 3D-style PS3 ribbon waves with top/bottom boundaries, twisting mesh,
  *   and delicate internal luminous silk filament strings.
  * - Sparse bioluminescent bubbles strictly tethered to the wave currents.
@@ -14,7 +14,6 @@ import React, { useEffect, useRef } from 'react';
  */
 export function PS3Background() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [animationActive, setAnimationActive] = React.useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -30,13 +29,11 @@ export function PS3Background() {
     const savedBgState = localStorage.getItem('portfolio-debug-bg');
     if (savedBgState !== null) {
       isAnimationEnabled = savedBgState === 'true';
-      setAnimationActive(isAnimationEnabled);
     }
 
     const handleToggleBg = (e: Event) => {
       const customEvent = e as CustomEvent<{ enabled: boolean }>;
       isAnimationEnabled = customEvent.detail.enabled;
-      setAnimationActive(isAnimationEnabled);
     };
 
     window.addEventListener('portfolio:toggle-bg-animation', handleToggleBg);
@@ -268,65 +265,12 @@ export function PS3Background() {
 
   return (
     <div
-      className="fixed inset-0 pointer-events-none -z-10 overflow-hidden bg-[#020712]"
+      className="fixed inset-0 pointer-events-none -z-10 overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #081927 0%, #020711 50%, #020711 100%)',
+      }}
       aria-hidden="true"
     >
-      {/* 
-        UNDERWATER SUNBEAM LIGHT RAYS (PENETRATING DEEP SEA WATER)
-        Hardware-accelerated SVG light shafts fanning down into the deep ocean.
-        Zero heavy blur filters — smooth 60-120 FPS.
-      */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Ocean surface ambient glow at the very top */}
-        <div className="absolute top-0 inset-x-0 h-44 bg-gradient-to-b from-cyan-400/18 via-sky-500/08 to-transparent pointer-events-none" />
-
-        {/* Crepuscular God Rays SVG */}
-        <svg
-          className="absolute top-0 left-0 w-full h-[90vh] pointer-events-none"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1440 900"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="deepSeaRay1" x1="0%" y1="0%" x2="22%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.24" />
-              <stop offset="35%" stopColor="#22d3ee" stopOpacity="0.10" />
-              <stop offset="85%" stopColor="#0284c7" stopOpacity="0" />
-            </linearGradient>
-
-            <linearGradient id="deepSeaRay2" x1="8%" y1="0%" x2="32%" y2="100%">
-              <stop offset="0%" stopColor="#34d399" stopOpacity="0.18" />
-              <stop offset="40%" stopColor="#38bdf8" stopOpacity="0.08" />
-              <stop offset="90%" stopColor="#0f172a" stopOpacity="0" />
-            </linearGradient>
-
-            <linearGradient id="deepSeaRay3" x1="0%" y1="0%" x2="16%" y2="100%">
-              <stop offset="0%" stopColor="#67e8f9" stopOpacity="0.22" />
-              <stop offset="30%" stopColor="#0284c7" stopOpacity="0.09" />
-              <stop offset="80%" stopColor="#020712" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-
-          {/* Group 1: Gentle Oceanic Sway 1 */}
-          <g className="animate-ray-1" style={animationActive ? undefined : { animationPlayState: 'paused' }}>
-            {/* Ray A: Angled down from upper left-center */}
-            <polygon points="190,0 290,0 520,900 320,900" fill="url(#deepSeaRay1)" />
-            {/* Ray C: Right shaft penetrating towards bottom right */}
-            <polygon points="840,0 950,0 1280,880 1100,880" fill="url(#deepSeaRay3)" />
-            {/* Ray E: Far left subtle accent */}
-            <polygon points="0,0 70,0 210,750 90,750" fill="url(#deepSeaRay2)" />
-          </g>
-
-          {/* Group 2: Complementary Gentle Oceanic Sway 2 */}
-          <g className="animate-ray-2" style={animationActive ? undefined : { animationPlayState: 'paused' }}>
-            {/* Ray B: Central prominent beam */}
-            <polygon points="480,0 600,0 880,900 680,900" fill="url(#deepSeaRay2)" />
-            {/* Ray D: Far right angled shaft */}
-            <polygon points="1080,0 1170,0 1420,800 1300,800" fill="url(#deepSeaRay1)" />
-          </g>
-        </svg>
-      </div>
-
       {/* 
         AUTHENTIC PS3 DYNAMIC RIBBON WAVES CANVAS
         Renders the twisting ribbon mesh, contour silk strings, and tethered bubbles.
@@ -334,11 +278,6 @@ export function PS3Background() {
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full block"
-      />
-
-      {/* Deep-sea oceanic bottom depth vignette */}
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-[#020712] via-transparent to-transparent opacity-70 pointer-events-none"
       />
     </div>
   );

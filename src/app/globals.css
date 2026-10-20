@@ -5,7 +5,7 @@
 :root,
 .dark {
   /* Oceanic Cyber-Glass (Deep Dark Blue, Emerald Green, and Aqua Cyan) */
-  --bg-canvas: #020712;
+  --bg-canvas: #020711;
   --bg-glass: rgba(5, 15, 30, 0.42);
   --bg-glass-solid-fallback: #071324;
   --bg-glass-card: rgba(5, 15, 30, 0.42);
@@ -121,38 +121,4 @@ html.disable-backdrop-blur .glass-card-surface {
   outline-offset: 2px;
 }
 
-/* Deep Sea Underwater Sunbeam Light Rays Drift */
-@keyframes rayShimmer1 {
-  0%, 100% {
-    opacity: 0.35;
-    transform: translate3d(0, 0, 0) skewX(-1.5deg);
-  }
-  50% {
-    opacity: 0.65;
-    transform: translate3d(12px, 0, 0) skewX(0.5deg);
-  }
-}
-
-@keyframes rayShimmer2 {
-  0%, 100% {
-    opacity: 0.45;
-    transform: translate3d(0, 0, 0) skewX(1deg);
-  }
-  50% {
-    opacity: 0.22;
-    transform: translate3d(-10px, 0, 0) skewX(-1.2deg);
-  }
-}
-
-.animate-ray-1 {
-  animation: rayShimmer1 14s ease-in-out infinite;
-  transform-origin: top center;
-  will-change: transform, opacity;
-}
-
-.animate-ray-2 {
-  animation: rayShimmer2 18s ease-in-out infinite;
-  transform-origin: top center;
-  will-change: transform, opacity;
-}
 
