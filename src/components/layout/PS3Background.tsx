@@ -14,9 +14,11 @@ import React, { useEffect, useRef } from 'react';
  */
 export function PS3Background() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    const container = containerRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
@@ -38,13 +40,47 @@ export function PS3Background() {
 
     window.addEventListener('portfolio:toggle-bg-animation', handleToggleBg);
 
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    const isTouchDevice = () => {
+      return (
+        typeof window !== 'undefined' &&
+        (window.matchMedia('(pointer: coarse)').matches ||
+          navigator.maxTouchPoints > 0 ||
+          'ontouchstart' in window)
+      );
+    };
+
+    const getDimensions = () => {
+      const w = container ? container.clientWidth : window.innerWidth;
+      const h = container ? container.clientHeight : window.innerHeight;
+      return { w: w || window.innerWidth, h: h || window.innerHeight };
+    };
+
+    let { w: width, h: height } = getDimensions();
+    canvas.width = width;
+    canvas.height = height;
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      const { w: newWidth, h: newHeight } = getDimensions();
+
+      // On mobile devices, scrolling causes Chrome/Safari to collapse/expand the address bar,
+      // which triggers a window resize event where ONLY the height fluctuates by ~50-80px.
+      // If width hasn't changed significantly on a touch device and height change is small (<150px),
+      // do not resize canvas buffer or change wave coordinates. This stops the snappy jump!
+      const widthChanged = Math.abs(newWidth - width) > 2;
+      const heightJump = Math.abs(newHeight - height);
+
+      if (isTouchDevice() && !widthChanged && heightJump < 150) {
+        return;
+      }
+
+      width = canvas.width = newWidth;
+      height = canvas.height = newHeight;
+    };
+
+    const handleOrientationChange = () => {
+      // Allow mobile browser layout to settle before recalculating
+      setTimeout(handleResize, 150);
     };
 
     const handleVisibilityChange = () => {
@@ -52,13 +88,14 @@ export function PS3Background() {
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
+    window.addEventListener('orientationchange', handleOrientationChange, { passive: true });
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Primary & Secondary PS3 Ribbon Wave Parameters
+    // Primary & Secondary PS3 Ribbon Wave Parameters (centered vertically at 0.50)
     const ribbons = [
       {
         // Ribbon 1: Foreground Electric Aqua-Cyan & Emerald Silk Wave
-        yRatio: 0.52,
+        yRatio: 0.50,
         amp1: 52,
         amp2: 32,
         freq1: 0.0018,
@@ -80,7 +117,7 @@ export function PS3Background() {
       },
       {
         // Ribbon 2: Background Harmonic Deep Sapphire & Electric Sky Ribbon
-        yRatio: 0.62,
+        yRatio: 0.50,
         amp1: 65,
         amp2: 28,
         freq1: 0.0014,
@@ -257,6 +294,7 @@ export function PS3Background() {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientationChange);
       window.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('portfolio:toggle-bg-animation', handleToggleBg);
       cancelAnimationFrame(animationFrameId);
@@ -265,7 +303,8 @@ export function PS3Background() {
 
   return (
     <div
-      className="fixed inset-0 pointer-events-none -z-10 overflow-hidden"
+      ref={containerRef}
+      className="ps3-background-container pointer-events-none -z-10 overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #081927 0%, #020711 50%, #020711 100%)',
       }}

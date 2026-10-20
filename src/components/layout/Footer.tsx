@@ -88,7 +88,7 @@ export function Footer() {
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-wider px-2.5 py-0.5 rounded-full bg-slate-900/60 border border-sky-400/20 text-sky-400/90 shadow-sm select-none">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            v0.1.7
+            v0.1.8
           </span>
         </div>
       </div>

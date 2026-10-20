@@ -121,4 +121,16 @@ html.disable-backdrop-blur .glass-card-surface {
   outline-offset: 2px;
 }
 
+/* Stable background container that resists mobile address bar resize snapping */
+.ps3-background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+  min-height: 100vh;
+}
+
+
 
