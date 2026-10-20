@@ -82,7 +82,7 @@ export function GlassButton({
       )}
       {variant === 'secondary' && (
         <span
-          className="absolute inset-0 rounded-full bg-slate-800/65 border border-sky-400/50 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
+          className="absolute inset-0 rounded-full bg-sky-400/[0.12] border border-sky-400/50 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
           aria-hidden="true"
         />
       )}

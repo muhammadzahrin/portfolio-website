@@ -92,7 +92,7 @@ export default function AboutPage() {
               <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-0.5 mb-2">
                 Status: {edu.status}
               </p>
-              <p className="text-xs sm:text-sm text-slate-300 font-mono bg-slate-900/40 p-3 rounded-xl border border-sky-400/20 backdrop-blur-sm">
+              <p className="text-xs sm:text-sm text-slate-300 font-mono bg-sky-950/20 p-3 rounded-xl border border-sky-400/20 backdrop-blur-sm">
                 {edu.note}
               </p>
             </GlassCard>
@@ -118,7 +118,7 @@ export default function AboutPage() {
                 {category.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-900/60 text-slate-200 border border-sky-400/20 shadow-sm"
+                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-sky-950/25 text-slate-200 border border-sky-400/20 shadow-sm"
                   >
                     {skill}
                   </span>
@@ -154,14 +154,14 @@ export default function AboutPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
-                <div className="p-3 rounded-xl bg-slate-900/40 border border-sky-400/20 backdrop-blur-sm">
+                <div className="p-3 rounded-xl bg-sky-950/20 border border-sky-400/20 backdrop-blur-sm">
                   <span className="font-semibold block text-slate-100 mb-1">
                     Event / Initiative:
                   </span>
                   <span className="text-slate-300">{highlight.event}</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-900/40 border border-sky-400/20 backdrop-blur-sm">
+                <div className="p-3 rounded-xl bg-sky-950/20 border border-sky-400/20 backdrop-blur-sm">
                   <span className="font-semibold block text-slate-100 mb-1">
                     My Role:
                   </span>

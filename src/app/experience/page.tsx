@@ -53,7 +53,7 @@ export default function ExperiencePage() {
                   </div>
 
                   <div className="self-start sm:self-auto">
-                    <span className="inline-block px-3 py-1 rounded-lg text-xs font-mono font-medium bg-slate-100/70 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50">
+                    <span className="inline-block px-3 py-1 rounded-lg text-xs font-mono font-medium bg-sky-950/30 text-slate-200 border border-sky-400/20">
                       {exp.startDate} — {exp.endDate}
                     </span>
                   </div>

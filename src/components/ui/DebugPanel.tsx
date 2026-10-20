@@ -82,7 +82,7 @@ export function DebugPanel() {
           type="button"
           onClick={() => setIsOpen(true)}
           aria-label="Open performance debug window"
-          className="apple-press flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-sky-400/30 shadow-lg text-xs font-mono backdrop-blur-md"
+          className="apple-press flex items-center gap-2 px-3 py-1.5 rounded-full glass-surface text-slate-200 border border-sky-400/30 shadow-lg text-xs font-mono"
         >
           <span
             className={`w-2 h-2 rounded-full ${
@@ -96,9 +96,9 @@ export function DebugPanel() {
 
       {/* Expanded Debug Panel Window */}
       {isOpen && (
-        <div className="w-80 sm:w-96 rounded-2xl bg-slate-950/95 border border-sky-400/40 p-5 shadow-2xl backdrop-blur-xl text-slate-200 animate-in fade-in zoom-in-95 duration-100">
+        <div className="w-80 sm:w-96 rounded-2xl glass-surface border border-sky-400/40 p-5 shadow-2xl backdrop-blur-xl text-slate-200 animate-in fade-in zoom-in-95 duration-100">
           {/* Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-4">
+          <div className="flex items-center justify-between pb-3 border-b border-sky-400/20 mb-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
               <h2 className="text-sm font-bold text-white tracking-tight">Performance & Debug HUD</h2>
@@ -107,7 +107,7 @@ export function DebugPanel() {
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close debug window"
-              className="w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-colors"
+              className="w-6 h-6 rounded-lg bg-sky-950/40 hover:bg-sky-900/60 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-colors border border-sky-400/20"
             >
               ✕
             </button>
@@ -115,7 +115,7 @@ export function DebugPanel() {
 
           {/* Real-time Hardware Metrics */}
           <div className="grid grid-cols-2 gap-2 mb-4">
-            <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col">
+            <div className="p-2.5 rounded-xl bg-sky-950/20 border border-sky-400/15 flex flex-col">
               <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono">Current FPS</span>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className={`text-xl font-bold font-mono ${fps >= 55 ? 'text-emerald-400' : fps >= 28 ? 'text-sky-400' : 'text-amber-400'}`}>
@@ -125,7 +125,7 @@ export function DebugPanel() {
               </div>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col">
+            <div className="p-2.5 rounded-xl bg-sky-950/20 border border-sky-400/15 flex flex-col">
               <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono">Frame Time</span>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-xl font-bold font-mono text-slate-200">
@@ -139,7 +139,7 @@ export function DebugPanel() {
           {/* Interactive Isolation Toggles */}
           <div className="space-y-3 mb-4">
             {/* 1. Background Animation Toggle */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+            <div className="flex items-center justify-between p-3 rounded-xl bg-sky-950/20 border border-sky-400/15">
               <div className="space-y-0.5 pr-2">
                 <div className="text-xs font-semibold text-white flex items-center gap-1.5">
                   <span>Background Animation</span>
@@ -170,7 +170,7 @@ export function DebugPanel() {
             </div>
 
             {/* 2. Backdrop Blur Toggle */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+            <div className="flex items-center justify-between p-3 rounded-xl bg-sky-950/20 border border-sky-400/15">
               <div className="space-y-0.5 pr-2">
                 <div className="text-xs font-semibold text-white flex items-center gap-1.5">
                   <span>Backdrop Glass Blur</span>

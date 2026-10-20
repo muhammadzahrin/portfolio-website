@@ -37,7 +37,7 @@ export function GlassCard({
       {/* GPU-Composited Hover Overlay: animates pure opacity to bypass backdrop-filter repaint */}
       {hoverEffect && (
         <div
-          className="absolute inset-0 rounded-2xl bg-slate-800/40 border border-sky-400/50 opacity-0 group-hover/card:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
+          className="absolute inset-0 rounded-2xl bg-sky-400/[0.05] border border-sky-400/40 opacity-0 group-hover/card:opacity-100 transition-opacity duration-75 ease-out pointer-events-none"
           aria-hidden="true"
         />
       )}

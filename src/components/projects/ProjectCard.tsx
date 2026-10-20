@@ -71,7 +71,7 @@ export function ProjectCard({ project, className = '' }: ProjectCardProps) {
           {project.techTags.map((tag) => (
             <span
               key={tag}
-              className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-900/60 text-slate-200 border border-sky-400/20"
+              className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-sky-950/30 text-slate-200 border border-sky-400/20"
             >
               {tag}
             </span>
