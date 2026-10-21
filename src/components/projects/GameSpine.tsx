@@ -6,22 +6,22 @@ import { Project } from '@/data/types';
 interface GameSpineProps {
   project: Project;
   onOpen: (project: Project, trigger: HTMLButtonElement) => void;
-  /** Small horizontal nudge so the mobile stack looks hand-placed. */
-  stackOffset?: number;
 }
 
 /**
- * PS2-style case spine built from a shared template:
- * label band (black = game, silver = software) / middle panel / catalogue band.
+ * PS2-style game case seen from the spine, locked to real case proportions:
+ * 14 mm x 190 mm black case, with the 14 x 184 mm spine art inset 3 mm from each end.
  *
- * Mobile: the case lies flat (horizontal spine, part of a vertical stack).
- * Desktop (md+): the case stands upright on the shelf (vertical spine text).
+ * Spine art template: label band (black = game, silver = software) / colour panel
+ * with logo + title / year band. Custom spine art (games) covers the whole art area.
  *
- * The frame and title render instantly as real text; the logo and any custom
- * spine art fade in over the top once they load, so slow connections still get
- * a complete-looking, usable shelf.
+ * Mobile: the case lies flat (horizontal), sized by width.
+ * Desktop (md+): the case stands upright on the shelf, sized by height.
+ *
+ * Frame and title render instantly as real text; the logo and custom spine art
+ * fade in once loaded, so slow connections still get a complete-looking shelf.
  */
-export function GameSpine({ project, onOpen, stackOffset = 0 }: GameSpineProps) {
+export function GameSpine({ project, onOpen }: GameSpineProps) {
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [artLoaded, setArtLoaded] = useState(false);
   const isGame = project.kind === 'game';
@@ -42,48 +42,54 @@ export function GameSpine({ project, onOpen, stackOffset = 0 }: GameSpineProps) 
       onPointerEnter={preloadCover}
       onFocus={preloadCover}
       aria-label={`Open ${project.title} (${isGame ? 'game' : 'software'}, ${project.year})`}
-      style={{ ['--stack-offset' as string]: `${stackOffset}px` }}
-      className="game-spine group relative flex shrink-0 overflow-hidden rounded-[3px] text-left
-        w-[calc(100%-16px)] max-w-md h-12 flex-row ml-[var(--stack-offset)]
-        md:ml-0 md:w-12 md:max-w-none md:h-[300px] md:flex-col
-        shadow-[0_2px_6px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.08)]
-        transition-transform duration-150 ease-out
-        md:hover:-translate-y-3 md:focus-visible:-translate-y-3
-        active:scale-[0.99] focus-visible:outline-offset-4"
+      className="game-spine group relative shrink-0 rounded-[2px] bg-[#070708]
+        w-full max-w-[420px] aspect-[190/14]
+        md:w-auto md:max-w-none md:h-[clamp(300px,52vh,400px)] md:aspect-[14/190]
+        shadow-[0_2px_6px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.07)]
+        transition-transform duration-200 ease-out
+        motion-safe:md:hover:-translate-y-3 motion-safe:md:focus-visible:-translate-y-3
+        focus-visible:outline-offset-4
+        before:absolute before:-inset-y-1 before:inset-x-0 before:content-['']"
     >
-      {/* Top band: my mark (in place of the console logo) */}
-      <span className={`${labelClass} flex items-center justify-center shrink-0 w-12 h-full md:w-full md:h-12`}>
-        <span className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black border border-current/40 bg-black/10">
-          Z
+      {/* Spine art area: 184 of the case's 190 mm, leaving 3 mm of black case at each end */}
+      <span className="spine-art absolute inset-y-0 inset-x-[1.58%] md:inset-x-0 md:inset-y-[1.58%] flex flex-row md:flex-col overflow-hidden">
+        {/* Label band: my mark (in place of a console logo) */}
+        <span className={`${labelClass} spine-band flex items-center justify-center shrink-0`}>
+          <span className="spine-mark rounded-full flex items-center justify-center font-black border border-current/40 bg-black/10">Z</span>
         </span>
-      </span>
 
-      {/* Middle panel: colour + logo + title (or custom spine art) */}
-      <span
-        className="relative flex-1 flex items-center gap-2.5 px-3 min-w-0 md:min-h-0 md:flex-col md:px-0 md:py-3 text-white"
-        style={{ background: `linear-gradient(180deg, rgba(255,255,255,0.14), transparent 40%, rgba(0,0,0,0.25)), ${project.spineColor}` }}
-      >
-        <span className="relative w-7 h-7 shrink-0 rounded-md bg-white/15 border border-white/25 flex items-center justify-center text-[10px] font-bold">
-          <span className={logoLoaded ? 'opacity-0' : ''}>
-            {project.title
-              .split(' ')
-              .map((w) => w[0])
-              .join('')
-              .slice(0, 2)}
+        {/* Colour panel: logo + title */}
+        <span
+          className="relative flex-1 min-w-0 md:min-h-0 flex flex-row md:flex-col items-center spine-panel text-white"
+          style={{ background: `linear-gradient(180deg, rgba(255,255,255,0.14), transparent 40%, rgba(0,0,0,0.25)), ${project.spineColor}` }}
+        >
+          <span className="spine-logo relative shrink-0 rounded-[3px] bg-white/15 border border-white/25 flex items-center justify-center font-bold">
+            <span className={logoLoaded ? 'opacity-0' : ''}>
+              {project.title
+                .split(' ')
+                .map((w) => w[0])
+                .join('')
+                .slice(0, 2)}
+            </span>
+            {project.assets?.logo && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={project.assets.logo}
+                alt=""
+                loading="lazy"
+                onLoad={() => setLogoLoaded(true)}
+                className={`absolute inset-0 w-full h-full object-contain p-px transition-opacity duration-300 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              />
+            )}
           </span>
-          {project.assets?.logo && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={project.assets.logo}
-              alt=""
-              loading="lazy"
-              onLoad={() => setLogoLoaded(true)}
-              className={`absolute inset-0 w-full h-full object-contain p-0.5 transition-opacity duration-300 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            />
-          )}
+          <span className="spine-title font-bold tracking-tight truncate min-w-0 md:min-h-0 md:[writing-mode:vertical-rl]">
+            {project.title}
+          </span>
         </span>
-        <span className="font-bold text-sm tracking-tight truncate md:[writing-mode:vertical-rl] md:text-[15px] md:min-h-0 md:max-h-full">
-          {project.title}
+
+        {/* Year band */}
+        <span className={`${labelClass} spine-year flex items-center justify-center shrink-0 font-mono`}>
+          <span className="md:[writing-mode:vertical-rl]">{project.year}</span>
         </span>
 
         {project.assets?.spineArt && (
@@ -93,19 +99,13 @@ export function GameSpine({ project, onOpen, stackOffset = 0 }: GameSpineProps) 
             alt=""
             loading="lazy"
             onLoad={() => setArtLoaded(true)}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${artLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`spine-art-img object-cover transition-opacity duration-300 ${artLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
         )}
       </span>
 
-      {/* Bottom band: catalogue code + year */}
-      <span className={`${labelClass} flex items-center justify-center gap-2 shrink-0 px-3 font-mono text-[10px] leading-none md:flex-col md:px-0 md:h-[84px] md:gap-1.5`}>
-        <span className="md:[writing-mode:vertical-rl]">{project.catalogCode}</span>
-        <span className="opacity-70">{project.year}</span>
-      </span>
-
       {/* Hover sheen */}
-      <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+      <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
     </button>
   );
 }

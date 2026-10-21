@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Project } from '@/data/types';
 import { CoverArt } from './CoverArt';
 import { ProjectManual } from './ProjectManual';
@@ -12,18 +12,34 @@ interface ProjectViewerProps {
 
 type TvPhase = 'insert' | 'static' | 'playing';
 
-// Kept short so reopening cases never feels slow; click the TV to skip
-const INSERT_MS = 500;
+// Slow enough to see the disc art, short enough not to annoy; click the TV to skip
+const INSERT_MS = 1100;
 const STATIC_MS = 250;
 
 /**
- * Opened game case: TV + console with the disc loading in (left / top on mobile)
- * and the game manual (right / below on mobile), over a darkened page.
+ * Disc sliding straight down into a slot. The clip box's bottom edge is the slot,
+ * so the disc disappears into it. 2D, no spin: the art stays readable.
+ */
+function DiscInsert({ project, className }: { project: Project; className: string }) {
+  return (
+    <div className={`disc-clip ${className}`} aria-hidden="true">
+      <div className="disc disc-slide w-full aspect-square text-[6px]">
+        <CoverArt project={project} />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Opened game case: TV (+ console on desktop) with the disc loading in, and the
+ * game manual, over a darkened page. Clicking anywhere except the TV or the
+ * manual closes it, as do Esc and the browser/phone back button.
  */
 export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
   const [phase, setPhase] = useState<TvPhase>('insert');
   const [isWide] = useState(() => window.matchMedia('(min-width: 768px)').matches);
-  const closeRef = useRef<HTMLButtonElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const pushedHistory = useRef(false);
 
   // Disc insert -> static -> video (skipped entirely for reduced motion)
   useEffect(() => {
@@ -39,53 +55,73 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
     };
   }, []);
 
+  // Back button closes the case instead of leaving the page: opening adds a
+  // history entry, and every way of closing goes back through it.
+  // (Tracked in a ref: Next's router rewrites history.state, so a flag there doesn't survive.)
+  const requestClose = useCallback(() => {
+    if (pushedHistory.current) {
+      window.history.back();
+    } else {
+      onClose();
+    }
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!pushedHistory.current) {
+      window.history.pushState(window.history.state, '');
+      pushedHistory.current = true;
+    }
+    const onPop = () => {
+      pushedHistory.current = false;
+      onClose();
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [onClose]);
+
   // Esc to close, lock page scroll, pause the wave canvas while it's covered
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') requestClose();
     };
     window.addEventListener('keydown', onKey);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: true } }));
-    closeRef.current?.focus();
+    dialogRef.current?.focus();
 
     return () => {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
       window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: false } }));
     };
-  }, [onClose]);
+  }, [requestClose]);
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-label={`${project.title} game case`}
-      className="viewer-backdrop fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden bg-[#01040a]/90"
+      className="viewer-backdrop fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden bg-[#01040a]/90 outline-none"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (!(e.target as HTMLElement).closest('[data-keep-open]')) requestClose();
       }}
     >
+      {/* Only visible when tabbed to, for keyboard and screen-reader users */}
       <button
-        ref={closeRef}
         type="button"
-        onClick={onClose}
-        aria-label="Close"
-        className="apple-press fixed top-3 right-3 z-10 w-10 h-10 rounded-full glass-surface border border-sky-400/30 text-slate-200 hover:text-white flex items-center justify-center text-xl"
+        onClick={requestClose}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:right-3 focus:z-10 focus:px-4 focus:py-2 focus:rounded-full focus:bg-slate-900 focus:border focus:border-sky-400/40 focus:text-sm focus:text-white"
       >
-        ×
+        Close
       </button>
 
-      <div
-        className="min-h-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 px-4 py-16 lg:py-8"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) onClose();
-        }}
-      >
-        {/* TV + console */}
-        <div className="w-full max-w-sm md:max-w-md lg:max-w-none lg:w-[38vw] lg:max-w-[520px] shrink-0">
-          <div className="crt-tv">
+      <div className="min-h-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 px-4 py-10 lg:py-8">
+        {/* TV (+ console on desktop) */}
+        <div data-keep-open className="w-full max-w-sm md:max-w-md lg:max-w-none lg:w-[38vw] lg:max-w-[520px] shrink-0">
+          <div className="crt-tv relative">
             <button
               type="button"
               onClick={() => setPhase('playing')}
@@ -121,8 +157,14 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
                 ))}
               <span className="crt-scanlines" aria-hidden="true" />
             </button>
-            <div className="flex items-center justify-between px-[4%] pt-[3%]">
+
+            <div className="relative flex items-center justify-between px-[4%] pt-[3%]">
               <span className="font-black tracking-[0.25em] text-[10px] text-slate-400">ZAHRIN</span>
+              {/* Mobile has no console, so the disc goes into a slot on the TV */}
+              <span className="md:hidden absolute left-1/2 -translate-x-1/2 top-[55%] w-[34%] h-[3px] rounded bg-black shadow-[0_1px_0_rgba(255,255,255,0.08)]" />
+              {phase === 'insert' && !isWide && (
+                <DiscInsert project={project} className="md:hidden absolute left-1/2 -translate-x-1/2 bottom-[45%] w-[30%]" />
+              )}
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
                 <span className="w-4 h-4 rounded-full bg-slate-700 border border-slate-600" />
@@ -131,17 +173,11 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
             </div>
           </div>
 
-          {/* Console: own design, PS2-era feel without real branding */}
-          <div className="relative mx-auto mt-3 w-[78%]">
-            {phase === 'insert' && (
-              <div className="disc-insert absolute left-[18%] bottom-[55%] w-[34%] aspect-square" aria-hidden="true">
-                <div className="disc w-full h-full text-[6px]">
-                  <CoverArt project={project} />
-                </div>
-              </div>
-            )}
+          {/* Console (desktop only): own design, PS2-era feel without real branding */}
+          <div className="hidden md:block relative mx-auto mt-3 w-[78%]">
             <div className="console-body">
               <span className="console-slot" />
+              {phase === 'insert' && isWide && <DiscInsert project={project} className="absolute left-[18%] bottom-[62%] w-[34%]" />}
               <span className="absolute right-[6%] top-1/2 -translate-y-1/2 flex items-center gap-1.5">
                 <span className={`w-1.5 h-1.5 rounded-full ${phase === 'insert' ? 'bg-amber-400' : 'bg-sky-400'} shadow-[0_0_6px_currentColor]`} />
               </span>
@@ -150,8 +186,11 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
         </div>
 
         {/* Manual */}
-        <div className={`${isWide ? 'manual-size-spread' : 'manual-size-single'} text-slate-100`}>
+        <div className={`${isWide ? 'manual-size-spread' : 'manual-size-single'} text-slate-100 flex flex-col items-center gap-3`}>
           <ProjectManual project={project} mode={isWide ? 'spread' : 'single'} />
+          <p className="text-[11px] text-slate-500">
+            {isWide ? 'Click outside or press Esc to close' : 'Tap outside to close'}
+          </p>
         </div>
       </div>
     </div>

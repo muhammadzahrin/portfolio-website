@@ -12,7 +12,6 @@ export const projectsData: Project[] = [
     title: 'Shuttle Tracker',
     slug: 'shuttle-tracker',
     kind: 'software',
-    catalogCode: 'ZHRS-0001',
     spineColor: '#1d4e89',
     manual: {
       madeFor: '[Placeholder: what problem it solved / who it was for]',
@@ -36,7 +35,6 @@ export const projectsData: Project[] = [
     title: 'MillGPT',
     slug: 'millgpt',
     kind: 'software',
-    catalogCode: 'ZHRS-0002',
     spineColor: '#0f5257',
     manual: {
       madeFor: '[Placeholder: what problem it solved / who it was for]',
@@ -60,7 +58,6 @@ export const projectsData: Project[] = [
     title: 'Workload Tracker',
     slug: 'workload-tracker',
     kind: 'software',
-    catalogCode: 'ZHRS-0003',
     spineColor: '#4a2c6d',
     manual: {
       madeFor: '[Placeholder: what problem it solved / who it was for]',
@@ -84,7 +81,6 @@ export const projectsData: Project[] = [
     title: 'Expired',
     slug: 'expired',
     kind: 'game',
-    catalogCode: 'ZHRG-0001',
     spineColor: '#6b1d1d',
     manual: {
       madeFor: '[Placeholder: e.g. class assignment, game jam, or just for fun]',
@@ -108,7 +104,6 @@ export const projectsData: Project[] = [
     title: 'JavaScript Canvas Game',
     slug: 'javascript-canvas-game',
     kind: 'game',
-    catalogCode: 'ZHRG-0002',
     spineColor: '#7a4a0c',
     manual: {
       madeFor: '[Placeholder: e.g. class assignment, game jam, or just for fun]',

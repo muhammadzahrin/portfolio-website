@@ -31,8 +31,7 @@ export function CoverArt({ project, className = '' }: CoverArtProps) {
         <span className="font-black leading-tight text-[1.6em] tracking-tight drop-shadow">{project.title}</span>
         <span className="mt-[6%] text-[0.6em] uppercase tracking-[0.25em] opacity-70">[Cover art placeholder]</span>
       </div>
-      <div className={`h-[7%] flex items-center justify-between px-[6%] text-[0.55em] font-mono ${isGame ? 'spine-label-game' : 'spine-label-software'}`}>
-        <span>{project.catalogCode}</span>
+      <div className={`h-[7%] flex items-center justify-end px-[6%] text-[0.55em] font-mono ${isGame ? 'spine-label-game' : 'spine-label-software'}`}>
         <span>{project.year}</span>
       </div>
     </div>

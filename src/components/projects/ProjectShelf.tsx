@@ -7,9 +7,6 @@ import { ProjectViewer } from './ProjectViewer';
 
 type Filter = 'all' | 'game' | 'software';
 
-// Hand-placed look for the mobile stack (px nudges, cycled)
-const STACK_OFFSETS = [0, 12, 4, 16, 6, 10, 2];
-
 interface ProjectShelfProps {
   projects: Project[];
 }
@@ -73,10 +70,10 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
 
       {/* Shelf: vertical stack on mobile, upright row on desktop */}
       <div className="relative rounded-2xl glass-surface border border-sky-400/20 px-4 pt-6 pb-0 md:px-8 md:pt-10">
-        <ul className="flex flex-col gap-1.5 md:flex-row md:flex-wrap md:items-end md:gap-1 min-h-[60px] md:min-h-[300px]">
-          {visible.map((project, i) => (
+        <ul className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-end md:gap-0.5 min-h-[30px] md:min-h-[300px]">
+          {visible.map((project) => (
             <li key={project._id} className="md:contents">
-              <GameSpine project={project} onOpen={handleOpen} stackOffset={STACK_OFFSETS[i % STACK_OFFSETS.length]} />
+              <GameSpine project={project} onOpen={handleOpen} />
             </li>
           ))}
         </ul>

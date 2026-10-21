@@ -65,9 +65,7 @@ function buildInnerPages(project: Project): React.ReactNode[] {
             </a>
           </li>
         ))}
-      </ul>
-      <p className="mt-auto pt-[1em] font-mono text-[0.75em] opacity-60">{project.catalogCode}</p>
-    </>,
+      </ul>    </>,
   ];
 
   if (pages.length % 2 === 1) {
@@ -132,6 +130,9 @@ export function ProjectManual({ project, mode }: ProjectManualProps) {
   const [position, setPosition] = useState(0);
   const [animating, setAnimating] = useState<number | null>(null);
   const timer = useRef<number>();
+  // Reduced motion: no 3D flip, the book fades between pages instead (re-keyed per page)
+  const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const fadeKey = reducedMotion ? position : 'book';
 
   const go = (delta: 1 | -1) => {
     const next = position + delta;
@@ -160,9 +161,9 @@ export function ProjectManual({ project, mode }: ProjectManualProps) {
   if (mode === 'single') {
     return (
       <div className="flex flex-col items-center gap-3">
-        <div className="flex items-center gap-3">
+        <div data-keep-open className="flex items-center gap-3">
           <ArrowButton dir="prev" hidden={position === 0} onClick={() => go(-1)} />
-          <div className="manual-page relative [perspective:1600px]">
+          <div key={fadeKey} className={`manual-page relative [perspective:1600px] ${reducedMotion ? 'manual-fade' : ''}`}>
             {pages.map((page, i) => {
               const turned = i < position;
               return (
@@ -197,9 +198,9 @@ export function ProjectManual({ project, mode }: ProjectManualProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="flex items-center gap-4">
+      <div data-keep-open className="flex items-center gap-4">
         <ArrowButton dir="prev" hidden={position === 0} onClick={() => go(-1)} />
-        <div className="manual-spread relative [perspective:2000px]">
+        <div key={fadeKey} className={`manual-spread relative [perspective:2000px] ${reducedMotion ? 'manual-fade' : ''}`}>
           <div
             className="absolute inset-0 [transform-style:preserve-3d] transition-transform ease-out"
             style={{ transform: `translateX(calc(var(--pw) * ${shift}))`, transitionDuration: `${FLIP_MS}ms` }}

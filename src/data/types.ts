@@ -62,8 +62,6 @@ export interface Project {
   featured: boolean;
   /** Shelf label: games get the black label, software gets the silver label. */
   kind: 'game' | 'software';
-  /** Catalogue code printed at the bottom of the spine, e.g. ZHRS-0001. */
-  catalogCode: string;
   /** Background colour of the spine's middle panel and the placeholder cover art. */
   spineColor: string;
   manual: ProjectManualInfo;
