@@ -181,7 +181,7 @@ html.disable-backdrop-blur .glass-card-surface {
 
 .spine-title { font-size: calc(var(--t) * 0.5); }
 
-/* Custom spine art is authored lying flat (184:14, e.g. 1472 x 112) */
+/* Custom spine art is authored lying flat (184:15, e.g. 1472 x 120) */
 .spine-art-img {
   position: absolute;
   inset: 0;
@@ -205,12 +205,44 @@ html.disable-backdrop-blur .glass-card-surface {
 }
 
 /* ---------- Project viewer (opened case) ---------- */
-.viewer-backdrop {
-  animation: viewer-fade-in 150ms ease-out;
+
+/*
+ * Only the TV + manual area is darkened, with feathered edges; the rest of
+ * the page stays visible (and scrollable) around it.
+ */
+.viewer-spotlight {
+  position: relative;
+  isolation: isolate;
+  animation: viewer-fade-in 200ms ease-out;
+}
+
+.viewer-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  z-index: -1;
+  border-radius: 48px;
+  background: rgba(1, 4, 10, 0.86);
+  box-shadow: 0 0 48px 36px rgba(1, 4, 10, 0.86);
+  pointer-events: none;
 }
 
 @keyframes viewer-fade-in {
   from { opacity: 0; }
+}
+
+/* TV size: on phones it's height-bound so TV + manual fit without scrolling */
+.viewer-tv {
+  width: min(calc(100vw - 32px), calc((100vh - 140px) * 0.45));
+  width: min(calc(100vw - 32px), calc((100dvh - 140px) * 0.45));
+}
+
+@media (min-width: 768px) {
+  .viewer-tv { width: 28rem; }
+}
+
+@media (min-width: 1024px) {
+  .viewer-tv { width: min(38vw, 520px); }
 }
 
 /* CRT TV block-out */
@@ -326,7 +358,8 @@ html.disable-backdrop-blur .glass-card-surface {
 
 /* ---------- Game manual (4.5 x 7.125 pages) ---------- */
 .manual-size-single {
-  --pw: min(calc(100vw - 130px), 300px);
+  --pw: min(calc(100vw - 130px), 300px, calc((100vh - 140px) * 0.38));
+  --pw: min(calc(100vw - 130px), 300px, calc((100dvh - 140px) * 0.38));
 }
 
 .manual-size-spread {

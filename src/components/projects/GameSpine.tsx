@@ -9,8 +9,9 @@ interface GameSpineProps {
 }
 
 /**
- * PS2-style game case seen from the spine, locked to real case proportions:
- * 14 mm x 190 mm black case, with the 14 x 184 mm spine art inset 3 mm from each end.
+ * PS2-style game case seen from the spine, locked to case proportions:
+ * 15 mm x 190 mm black case, with the 15 x 184 mm spine art inset 3 mm from each end.
+ * (Real spec is 14 mm; 15 reads better on screen.)
  *
  * Spine art template: label band (black = game, silver = software) / colour panel
  * with logo + title / year band. Custom spine art (games) covers the whole art area.
@@ -43,8 +44,8 @@ export function GameSpine({ project, onOpen }: GameSpineProps) {
       onFocus={preloadCover}
       aria-label={`Open ${project.title} (${isGame ? 'game' : 'software'}, ${project.year})`}
       className="game-spine group relative shrink-0 rounded-[2px] bg-[#070708]
-        w-full max-w-[420px] aspect-[190/14]
-        md:w-auto md:max-w-none md:h-[clamp(300px,52vh,400px)] md:aspect-[14/190]
+        w-full max-w-[420px] aspect-[190/15]
+        md:w-auto md:max-w-none md:h-[clamp(300px,52vh,400px)] md:aspect-[15/190]
         shadow-[0_2px_6px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.07)]
         transition-transform duration-200 ease-out
         motion-safe:md:hover:-translate-y-3 motion-safe:md:focus-visible:-translate-y-3

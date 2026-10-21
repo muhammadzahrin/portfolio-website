@@ -79,20 +79,18 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
     return () => window.removeEventListener('popstate', onPop);
   }, [onClose]);
 
-  // Esc to close, lock page scroll, pause the wave canvas while it's covered
+  // Esc to close; pause the wave canvas while a case is open (attention is on the TV).
+  // The page keeps its scrollbar and can still scroll behind the case.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') requestClose();
     };
     window.addEventListener('keydown', onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: true } }));
-    dialogRef.current?.focus();
+    dialogRef.current?.focus({ preventScroll: true });
 
     return () => {
       window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prevOverflow;
       window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: false } }));
     };
   }, [requestClose]);
@@ -104,7 +102,7 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
       role="dialog"
       aria-modal="true"
       aria-label={`${project.title} game case`}
-      className="viewer-backdrop fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden bg-[#01040a]/90 outline-none"
+      className="fixed inset-0 z-[100] overflow-hidden flex items-center justify-center p-4 outline-none"
       onClick={(e) => {
         if (!(e.target as HTMLElement).closest('[data-keep-open]')) requestClose();
       }}
@@ -118,9 +116,9 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
         Close
       </button>
 
-      <div className="min-h-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 px-4 py-10 lg:py-8">
+      <div className="viewer-spotlight flex flex-col lg:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-12">
         {/* TV (+ console on desktop) */}
-        <div data-keep-open className="w-full max-w-sm md:max-w-md lg:max-w-none lg:w-[38vw] lg:max-w-[520px] shrink-0">
+        <div data-keep-open className="viewer-tv shrink-0">
           <div className="crt-tv relative">
             <button
               type="button"
