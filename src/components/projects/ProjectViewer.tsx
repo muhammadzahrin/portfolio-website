@@ -17,7 +17,7 @@ const INSERT_MS = 1100;
 const STATIC_MS = 250;
 
 /**
- * Disc sliding straight down into a slot. The clip box's bottom edge is the slot,
+ * Disc rising straight up into a slot. The clip box's top edge is the slot,
  * so the disc disappears into it. 2D, no spin: the art stays readable.
  */
 function DiscInsert({ project, className }: { project: Project; className: string }) {
@@ -118,7 +118,8 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
 
       <div className="viewer-spotlight flex flex-col lg:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-12">
         {/* TV (+ console on desktop) */}
-        <div data-keep-open className="viewer-tv shrink-0">
+        {/* md:pb leaves room under the console for the disc rising into it */}
+        <div data-keep-open className="viewer-tv shrink-0 md:pb-20">
           <div className="crt-tv relative">
             <button
               type="button"
@@ -161,7 +162,7 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
               {/* Mobile has no console, so the disc goes into a slot on the TV */}
               <span className="md:hidden absolute left-1/2 -translate-x-1/2 top-[55%] w-[34%] h-[3px] rounded bg-black shadow-[0_1px_0_rgba(255,255,255,0.08)]" />
               {phase === 'insert' && !isWide && (
-                <DiscInsert project={project} className="md:hidden absolute left-1/2 -translate-x-1/2 bottom-[45%] w-[30%]" />
+                <DiscInsert project={project} className="md:hidden absolute z-20 left-1/2 -translate-x-1/2 top-[55%] w-[30%]" />
               )}
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
@@ -175,7 +176,7 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
           <div className="hidden md:block relative mx-auto mt-3 w-[78%]">
             <div className="console-body">
               <span className="console-slot" />
-              {phase === 'insert' && isWide && <DiscInsert project={project} className="absolute left-[18%] bottom-[62%] w-[34%]" />}
+              {phase === 'insert' && isWide && <DiscInsert project={project} className="absolute z-20 left-[21%] top-[38%] w-[28%]" />}
               <span className="absolute right-[6%] top-1/2 -translate-y-1/2 flex items-center gap-1.5">
                 <span className={`w-1.5 h-1.5 rounded-full ${phase === 'insert' ? 'bg-amber-400' : 'bg-sky-400'} shadow-[0_0_6px_currentColor]`} />
               </span>

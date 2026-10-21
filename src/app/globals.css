@@ -181,6 +181,11 @@ html.disable-backdrop-blur .glass-card-surface {
 
 .spine-title { font-size: calc(var(--t) * 0.5); }
 
+/* Mobile: case pulled out of the stack by a first tap */
+.spine-pulled {
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.8), 0 0 16px rgba(56, 189, 248, 0.5), 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
 /* Custom spine art is authored lying flat (184:15, e.g. 1472 x 120) */
 .spine-art-img {
   position: absolute;
@@ -207,8 +212,9 @@ html.disable-backdrop-blur .glass-card-surface {
 /* ---------- Project viewer (opened case) ---------- */
 
 /*
- * Only the TV + manual area is darkened, with feathered edges; the rest of
- * the page stays visible (and scrollable) around it.
+ * Only the TV + manual area is darkened: solid black with a short, crisp fade
+ * at the edge, so it's clear where "outside" (click to close) begins. The rest
+ * of the page stays visible (and scrollable) around it.
  */
 .viewer-spotlight {
   position: relative;
@@ -219,11 +225,11 @@ html.disable-backdrop-blur .glass-card-surface {
 .viewer-spotlight::before {
   content: '';
   position: absolute;
-  inset: -12px;
+  inset: -24px;
   z-index: -1;
-  border-radius: 48px;
-  background: rgba(1, 4, 10, 0.86);
-  box-shadow: 0 0 48px 36px rgba(1, 4, 10, 0.86);
+  border-radius: 32px;
+  background: #01040a;
+  box-shadow: 0 0 14px 6px #01040a;
   pointer-events: none;
 }
 
@@ -335,8 +341,8 @@ html.disable-backdrop-blur .glass-card-surface {
 }
 
 /*
- * Disc loading: the clip box's bottom edge sits on the slot, so the disc
- * disappears into it as it slides down. Straight 2D slide, no spin, with a
+ * Disc loading: the clip box's top edge sits on the slot, so the disc rises
+ * from below and disappears up into it. Straight 2D slide, no spin, with a
  * short hold first so the disc art is readable.
  */
 .disc-clip {
@@ -350,10 +356,10 @@ html.disable-backdrop-blur .glass-card-surface {
 }
 
 @keyframes disc-slide {
-  0% { transform: translateY(-12%); opacity: 0; }
+  0% { transform: translateY(12%); opacity: 0; }
   15% { transform: translateY(0); opacity: 1; }
   45% { transform: translateY(0); }
-  100% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
 }
 
 /* ---------- Game manual (4.5 x 7.125 pages) ---------- */

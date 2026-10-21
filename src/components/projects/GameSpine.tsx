@@ -5,7 +5,9 @@ import { Project } from '@/data/types';
 
 interface GameSpineProps {
   project: Project;
-  onOpen: (project: Project, trigger: HTMLButtonElement) => void;
+  onActivate: (project: Project, trigger: HTMLButtonElement) => void;
+  /** Mobile: pulled out of the stack by a first tap; a second tap opens it. */
+  pulledOut?: boolean;
 }
 
 /**
@@ -16,13 +18,13 @@ interface GameSpineProps {
  * Spine art template: label band (black = game, silver = software) / colour panel
  * with logo + title / year band. Custom spine art (games) covers the whole art area.
  *
- * Mobile: the case lies flat (horizontal), sized by width.
+ * Mobile: the case lies flat (horizontal) in a gapless stack, sized by width.
  * Desktop (md+): the case stands upright on the shelf, sized by height.
  *
  * Frame and title render instantly as real text; the logo and custom spine art
  * fade in once loaded, so slow connections still get a complete-looking shelf.
  */
-export function GameSpine({ project, onOpen }: GameSpineProps) {
+export function GameSpine({ project, onActivate, pulledOut = false }: GameSpineProps) {
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [artLoaded, setArtLoaded] = useState(false);
   const isGame = project.kind === 'game';
@@ -39,18 +41,21 @@ export function GameSpine({ project, onOpen }: GameSpineProps) {
   return (
     <button
       type="button"
-      onClick={(e) => onOpen(project, e.currentTarget)}
+      onClick={(e) => {
+        preloadCover();
+        onActivate(project, e.currentTarget);
+      }}
       onPointerEnter={preloadCover}
       onFocus={preloadCover}
       aria-label={`Open ${project.title} (${isGame ? 'game' : 'software'}, ${project.year})`}
-      className="game-spine group relative shrink-0 rounded-[2px] bg-[#070708]
+      className={`game-spine group relative shrink-0 rounded-[2px] bg-[#070708]
         w-full max-w-[420px] aspect-[190/15]
-        md:w-auto md:max-w-none md:h-[clamp(300px,52vh,400px)] md:aspect-[15/190]
+        md:w-auto md:max-w-none md:h-[clamp(380px,68vh,520px)] md:aspect-[15/190]
         shadow-[0_2px_6px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.07)]
-        transition-transform duration-200 ease-out
+        transition-[transform,box-shadow] duration-200 ease-out
         motion-safe:md:hover:-translate-y-3 motion-safe:md:focus-visible:-translate-y-3
         focus-visible:outline-offset-4
-        before:absolute before:-inset-y-1 before:inset-x-0 before:content-['']"
+        ${pulledOut ? 'spine-pulled translate-x-3 z-10' : ''}`}
     >
       {/* Spine art area: 184 of the case's 190 mm, leaving 3 mm of black case at each end */}
       <span className="spine-art absolute inset-y-0 inset-x-[1.58%] md:inset-x-0 md:inset-y-[1.58%] flex flex-row md:flex-col overflow-hidden">

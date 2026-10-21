@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Project } from '@/data/types';
 import { GameSpine } from './GameSpine';
 import { ProjectViewer } from './ProjectViewer';
@@ -14,11 +14,24 @@ interface ProjectShelfProps {
 /**
  * Shelf of PS2-style game cases. Games and software share one shelf;
  * the filter narrows it to either. Opening a case shows the TV + manual viewer.
+ *
+ * Mobile stack: the cases are thin and gapless, so a first tap pulls a case out
+ * and a second tap opens it; a mis-tap never opens the wrong project.
  */
 export function ProjectShelf({ projects }: ProjectShelfProps) {
   const [filter, setFilter] = useState<Filter>('all');
   const [openProject, setOpenProject] = useState<Project | null>(null);
+  const [pulledOutId, setPulledOutId] = useState<string | null>(null);
+  const [isStack, setIsStack] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsStack(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   const visible = filter === 'all' ? projects : projects.filter((p) => p.kind === filter);
   const counts = {
@@ -27,10 +40,17 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
     software: projects.filter((p) => p.kind === 'software').length,
   };
 
-  const handleOpen = useCallback((project: Project, trigger: HTMLButtonElement) => {
-    triggerRef.current = trigger;
-    setOpenProject(project);
-  }, []);
+  const handleActivate = useCallback(
+    (project: Project, trigger: HTMLButtonElement) => {
+      if (isStack && pulledOutId !== project._id) {
+        setPulledOutId(project._id);
+        return;
+      }
+      triggerRef.current = trigger;
+      setOpenProject(project);
+    },
+    [isStack, pulledOutId]
+  );
 
   const handleClose = useCallback(() => {
     setOpenProject(null);
@@ -55,7 +75,10 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
               key={f.id}
               type="button"
               aria-pressed={active}
-              onClick={() => setFilter(f.id)}
+              onClick={() => {
+                setFilter(f.id);
+                setPulledOutId(null);
+              }}
               className={`apple-press px-4 py-1.5 rounded-full text-xs font-semibold border ${
                 active
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400/30'
@@ -70,10 +93,10 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
 
       {/* Shelf: vertical stack on mobile, upright row on desktop */}
       <div className="relative rounded-2xl glass-surface border border-sky-400/20 px-4 pt-6 pb-0 md:px-8 md:pt-10">
-        <ul className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-end md:gap-0.5 min-h-[30px] md:min-h-[300px]">
+        <ul className="flex flex-col md:flex-row md:flex-wrap md:items-end md:gap-0.5 min-h-[30px] md:min-h-[380px]">
           {visible.map((project) => (
-            <li key={project._id} className="md:contents">
-              <GameSpine project={project} onOpen={handleOpen} />
+            <li key={project._id} className="flex md:contents">
+              <GameSpine project={project} onActivate={handleActivate} pulledOut={isStack && pulledOutId === project._id} />
             </li>
           ))}
         </ul>
@@ -83,7 +106,7 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
 
       <p className="mt-3 text-xs text-slate-400">
         <span className="hidden md:inline">Hover a case to pull it out, click to open.</span>
-        <span className="md:hidden">Tap a case to open it.</span>
+        <span className="md:hidden">Tap a case to pull it out, tap again to open.</span>
       </p>
 
       {openProject && <ProjectViewer project={openProject} onClose={handleClose} />}
