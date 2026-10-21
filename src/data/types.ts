@@ -60,6 +60,39 @@ export interface Project {
   placeholderDescription: string;
   supervisorApprovalNote?: string;
   featured: boolean;
+  /** Shelf label: games get the black label, software gets the silver label. */
+  kind: 'game' | 'software';
+  /** Catalogue code printed at the bottom of the spine, e.g. ZHRS-0001. */
+  catalogCode: string;
+  /** Background colour of the spine's middle panel and the placeholder cover art. */
+  spineColor: string;
+  manual: ProjectManualInfo;
+  /**
+   * Optional image paths (relative to /public). Anything left out falls back
+   * to the generated placeholder, so the shelf works before any art exists.
+   */
+  assets?: {
+    /** Project logo for the template spine (SVG preferred). */
+    logo?: string;
+    /** Full custom spine art; replaces the template's middle panel (games). */
+    spineArt?: string;
+    /** Manual cover, 4.5 x 7.125 ratio (e.g. 1000 x 1583). Also printed on the disc. */
+    cover?: string;
+    /** Short looping MP4 shown on the TV. */
+    video?: string;
+    /** Still frame shown on the TV while the video loads. */
+    videoPoster?: string;
+  };
+}
+
+export interface ProjectManualInfo {
+  /** What the project was made for (purpose / brief). */
+  madeFor: string;
+  /** Organisation it was made under, or 'Personal project'. */
+  madeUnder: string;
+  /** My role, e.g. 'Sole developer'. */
+  role: string;
+  links: { label: string; href: string }[];
 }
 
 export interface Highlight {

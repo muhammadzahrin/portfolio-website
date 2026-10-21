@@ -40,6 +40,13 @@ export function PS3Background() {
 
     window.addEventListener('portfolio:toggle-bg-animation', handleToggleBg);
 
+    // Paused while something covers the page (e.g. an opened project case)
+    let isCovered = false;
+    const handlePauseBg = (e: Event) => {
+      isCovered = (e as CustomEvent<{ paused: boolean }>).detail.paused;
+    };
+    window.addEventListener('portfolio:pause-bg', handlePauseBg);
+
     const isTouchDevice = () => {
       return (
         typeof window !== 'undefined' &&
@@ -177,7 +184,7 @@ export function PS3Background() {
     const render = (currentTime: number) => {
       animationFrameId = requestAnimationFrame(render);
 
-      if (isPaused || !isAnimationEnabled) return;
+      if (isPaused || isCovered || !isAnimationEnabled) return;
 
       const elapsed = currentTime - lastFrameTime;
       if (elapsed < fpsInterval) return;
@@ -297,6 +304,7 @@ export function PS3Background() {
       window.removeEventListener('orientationchange', handleOrientationChange);
       window.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('portfolio:toggle-bg-animation', handleToggleBg);
+      window.removeEventListener('portfolio:pause-bg', handlePauseBg);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

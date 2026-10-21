@@ -3,6 +3,7 @@ import { Project } from './types';
 /**
  * Projects data shaped for future CMS integration.
  * Descriptions are generic placeholders with supervisor TODO comments.
+ * Add art under public/projects/<slug>/ and point `assets` at it to replace a placeholder.
  */
 export const projectsData: Project[] = [
   {
@@ -10,6 +11,15 @@ export const projectsData: Project[] = [
     _type: 'project',
     title: 'Shuttle Tracker',
     slug: 'shuttle-tracker',
+    kind: 'software',
+    catalogCode: 'ZHRS-0001',
+    spineColor: '#1d4e89',
+    manual: {
+      madeFor: '[Placeholder: what problem it solved / who it was for]',
+      madeUnder: 'SD Guthrie Berhad (internship)',
+      role: '[Placeholder: e.g. Sole developer]',
+      links: [{ label: '[Placeholder link]', href: '#' }],
+    },
     oneLineSummary: '[One line about this project: Transit tracking utility for campus/facility routes]',
     techTags: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Maps API'],
     year: '2024',
@@ -25,6 +35,15 @@ export const projectsData: Project[] = [
     _type: 'project',
     title: 'MillGPT',
     slug: 'millgpt',
+    kind: 'software',
+    catalogCode: 'ZHRS-0002',
+    spineColor: '#0f5257',
+    manual: {
+      madeFor: '[Placeholder: what problem it solved / who it was for]',
+      madeUnder: 'SD Guthrie Berhad (internship)',
+      role: '[Placeholder: e.g. Sole developer]',
+      links: [{ label: '[Placeholder link]', href: '#' }],
+    },
     oneLineSummary: '[One line about this project: AI-assisted documentation & knowledge lookup assistant]',
     techTags: ['Python', 'LLM API', 'React', 'FastAPI'],
     year: '2024',
@@ -40,6 +59,15 @@ export const projectsData: Project[] = [
     _type: 'project',
     title: 'Workload Tracker',
     slug: 'workload-tracker',
+    kind: 'software',
+    catalogCode: 'ZHRS-0003',
+    spineColor: '#4a2c6d',
+    manual: {
+      madeFor: '[Placeholder: what problem it solved / who it was for]',
+      madeUnder: 'SD Guthrie Berhad (internship)',
+      role: '[Placeholder: e.g. Sole developer]',
+      links: [{ label: '[Placeholder link]', href: '#' }],
+    },
     oneLineSummary: '[One line about this project: Task and resource allocation dashboard for team workflows]',
     techTags: ['React', 'TypeScript', 'Node.js', 'CSS Modules'],
     year: '2024',
@@ -55,6 +83,15 @@ export const projectsData: Project[] = [
     _type: 'project',
     title: 'Expired',
     slug: 'expired',
+    kind: 'game',
+    catalogCode: 'ZHRG-0001',
+    spineColor: '#6b1d1d',
+    manual: {
+      madeFor: '[Placeholder: e.g. class assignment, game jam, or just for fun]',
+      madeUnder: 'Personal project',
+      role: '[Placeholder: e.g. Sole developer]',
+      links: [{ label: '[Placeholder link]', href: '#' }],
+    },
     oneLineSummary: '[One line about this project: 2D point-and-click horror game created in Python & Pygame]',
     techTags: ['Python', 'Pygame', 'Game Design', '2D Art'],
     year: '2023',
@@ -70,6 +107,15 @@ export const projectsData: Project[] = [
     _type: 'project',
     title: 'JavaScript Canvas Game',
     slug: 'javascript-canvas-game',
+    kind: 'game',
+    catalogCode: 'ZHRG-0002',
+    spineColor: '#7a4a0c',
+    manual: {
+      madeFor: '[Placeholder: e.g. class assignment, game jam, or just for fun]',
+      madeUnder: 'Personal project',
+      role: '[Placeholder: e.g. Sole developer]',
+      links: [{ label: '[Placeholder link]', href: '#' }],
+    },
     oneLineSummary: '[One line about this project: Interactive 2D arcade prototype built using HTML5 Canvas]',
     techTags: ['JavaScript', 'HTML5 Canvas', 'Physics Loop', 'CSS'],
     year: '2023',
