@@ -272,7 +272,7 @@ html.disable-backdrop-blur .glass-card-surface {
 }
 
 /* Phone shelf has no glass panel: the cases run edge to edge.
-   Phone spines use the PS1 spine label's proportions (118 x 6.5mm), no end caps, logo square only */
+   Phone spines use a PS1 spine label's proportions (734:78, measured from a reference image), no end caps, logo square only */
 @media (max-width: 767px) {
   .spine-brand { display: none; }
   .shelf-panel.glass-surface {
