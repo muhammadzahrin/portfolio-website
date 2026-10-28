@@ -271,6 +271,18 @@ html.disable-backdrop-blur .glass-card-surface {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
+/* Phone shelf has no glass panel: the cases run edge to edge */
+@media (max-width: 767px) {
+  .shelf-panel.glass-surface {
+    background: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+}
+
 html.case-open main .glass-surface:not(.viewer-spotlight *),
 html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   backdrop-filter: none !important;

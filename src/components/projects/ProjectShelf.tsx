@@ -152,7 +152,8 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
       </div>
 
       {/* Shelf: vertical stack on mobile, upright row on desktop */}
-      <div className="relative rounded-2xl glass-surface border border-sky-400/20 px-4 pt-6 pb-0 md:px-8 md:pt-10">
+      {/* Phone: edge to edge with no panel; clip-x so a pulled-out case can't cause sideways scroll */}
+      <div className="shelf-panel relative -mx-4 sm:-mx-6 md:mx-0 overflow-x-clip md:overflow-visible rounded-2xl glass-surface border border-sky-400/20 md:px-8 md:pt-10">
         <ul className="flex flex-col md:flex-row md:flex-wrap md:items-end md:gap-0.5 min-h-[30px] md:min-h-[380px]">
           {visible.map((project) => (
             <li key={project._id} className="flex md:contents">
@@ -166,7 +167,7 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
           ))}
         </ul>
         {/* Shelf plank */}
-        <div className="mt-1.5 md:mt-0 -mx-4 md:-mx-8 h-3 rounded-b-2xl bg-gradient-to-b from-sky-300/25 via-sky-900/40 to-slate-950/60 border-t border-sky-300/40" aria-hidden="true" />
+        <div className="mt-1.5 md:mt-0 md:-mx-8 h-3 md:rounded-b-2xl bg-gradient-to-b from-sky-300/25 via-sky-900/40 to-slate-950/60 border-t border-sky-300/40" aria-hidden="true" />
       </div>
 
       <p className="mt-3 text-xs text-slate-400">

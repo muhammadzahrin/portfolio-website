@@ -53,8 +53,8 @@ export function GameSpine({ project, onActivate, pulledOut = false, revealed }: 
       onPointerEnter={preloadCover}
       onFocus={preloadCover}
       aria-label={`Open ${project.title} (${isGame ? 'game' : 'software'}, ${project.year})`}
-      className={`game-spine group relative shrink-0 rounded-[2px] bg-[#070708] text-left
-        w-full max-w-[420px] aspect-[190/15]
+      className={`game-spine group relative shrink-0 md:rounded-[2px] bg-[#070708] text-left
+        w-full aspect-[190/15]
         md:w-auto md:max-w-none md:h-[clamp(380px,68vh,520px)] md:aspect-[15/190]
         shadow-[0_2px_6px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.07)]
         transition-[transform,box-shadow] duration-200 ease-out
