@@ -32,8 +32,9 @@ function DiscInsert({ project, className }: { project: Project; className: strin
 
 /**
  * Opened game case: TV (+ console on desktop) with the disc loading in, and the
- * game manual, on a black glass panel. Clicking anywhere outside that panel
- * closes it, as do Esc and the browser/phone back button.
+ * game manual, on a black glass panel. On desktop, clicking outside that panel
+ * closes it; on phones the panel fills the screen and has an X. Esc and the
+ * browser/phone back button close it too.
  */
 export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
   const [phase, setPhase] = useState<TvPhase>('insert');
@@ -105,19 +106,31 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
       role="dialog"
       aria-modal="true"
       aria-label={`${project.title} game case`}
-      className="fixed inset-0 z-[100] overflow-hidden flex items-center justify-center p-4 outline-none"
+      className="fixed inset-0 z-[100] overflow-hidden flex items-center justify-center p-4 max-md:pt-[68px] outline-none"
       onClick={(e) => {
-        if (!(e.target as HTMLElement).closest('[data-keep-open]')) requestClose();
+        // Phones: the panel fills the screen, so only the X closes it
+        if (isWide && !(e.target as HTMLElement).closest('[data-keep-open]')) requestClose();
       }}
     >
-      {/* Only visible when tabbed to, for keyboard and screen-reader users */}
-      <button
-        type="button"
-        onClick={requestClose}
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:right-3 focus:z-10 focus:px-4 focus:py-2 focus:rounded-full focus:bg-slate-900 focus:border focus:border-sky-400/40 focus:text-sm focus:text-white"
-      >
-        Close
-      </button>
+      {isWide ? (
+        // Only visible when tabbed to, for keyboard and screen-reader users
+        <button
+          type="button"
+          onClick={requestClose}
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:right-3 focus:z-10 focus:px-4 focus:py-2 focus:rounded-full focus:bg-slate-900 focus:border focus:border-sky-400/40 focus:text-sm focus:text-white"
+        >
+          Close
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={requestClose}
+          aria-label="Close"
+          className="viewer-close fixed top-3 right-3 z-10 w-11 h-11 rounded-full flex items-center justify-center text-2xl leading-none text-white/80 bg-white/10 border border-white/15 active:bg-white/20"
+        >
+          ×
+        </button>
+      )}
 
       {/* The whole black glass panel (including its border area) keeps the case open */}
       <div data-keep-open className="viewer-spotlight flex flex-col lg:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-12">
@@ -191,9 +204,7 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
         {/* Manual */}
         <div className={`${isWide ? 'manual-size-spread' : 'manual-size-single'} text-slate-100 flex flex-col items-center gap-3`}>
           <ProjectManual project={project} mode={isWide ? 'spread' : 'single'} />
-          <p className="text-[11px] text-slate-500">
-            {isWide ? 'Click outside or press Esc to close' : 'Tap outside to close'}
-          </p>
+          {isWide && <p className="text-[11px] text-slate-500">Click outside or press Esc to close</p>}
         </div>
       </div>
     </div>

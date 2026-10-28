@@ -253,7 +253,7 @@ html.disable-backdrop-blur .glass-card-surface {
 .viewer-spotlight {
   position: relative;
   isolation: isolate;
-  animation: viewer-fade-in 200ms ease-out;
+  animation: viewer-fade-in 300ms ease-out;
 }
 
 .viewer-spotlight::before {
@@ -269,6 +269,21 @@ html.disable-backdrop-blur .glass-card-surface {
   -webkit-backdrop-filter: blur(14px) saturate(120%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Phones: the black glass fills the whole screen, navbar included (the dialog sits above it) */
+@media (max-width: 767px) {
+  .viewer-spotlight::before {
+    position: fixed;
+    inset: 0;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+.viewer-close {
+  animation: viewer-fade-in 300ms ease-out;
 }
 
 /* Phone shelf has no glass panel: the cases run edge to edge.
@@ -297,11 +312,12 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 
 /*
  * TV size: on phones it's height-bound so TV + manual fit without scrolling.
- * Sizes leave a clear margin of page around the black glass panel to click off.
+ * Phones: 144px = 68px top room for the X + 16px bottom margin + gap + manual page label.
+ * Desktop sizes leave a clear margin of page around the black glass panel to click off.
  */
 .viewer-tv {
-  width: min(calc(100vw - 112px), calc((100vh - 140px) * 0.38));
-  width: min(calc(100vw - 112px), calc((100dvh - 140px) * 0.38));
+  width: min(calc(100vw - 48px), calc((100vh - 144px) * 0.42));
+  width: min(calc(100vw - 48px), calc((100dvh - 144px) * 0.42));
 }
 
 @media (min-width: 768px) {
@@ -424,9 +440,10 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 }
 
 /* ---------- Game manual (4.5 x 7.125 pages) ---------- */
+/* 136px = two 40px page arrows + their gaps + 16px side margins */
 .manual-size-single {
-  --pw: min(calc(100vw - 200px), 280px, calc((100vh - 140px) * 0.32));
-  --pw: min(calc(100vw - 200px), 280px, calc((100dvh - 140px) * 0.32));
+  --pw: min(calc(100vw - 136px), 280px, calc((100vh - 144px) * 0.4));
+  --pw: min(calc(100vw - 136px), 280px, calc((100dvh - 144px) * 0.4));
 }
 
 .manual-size-spread {

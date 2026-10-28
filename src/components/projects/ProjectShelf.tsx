@@ -10,6 +10,9 @@ type Filter = 'all' | 'game' | 'software';
 // After this long, show whatever spine images have loaded instead of waiting for the rest
 const IMAGE_REVEAL_TIMEOUT_MS = 3000;
 
+// How long the pressed case shows before the viewer starts fading in
+const PRESS_MS = 180;
+
 /**
  * Preloads the shelf's spine images (custom spine art and client logos) and
  * reveals them together, so spines don't pop in one by one. Anything still
@@ -73,25 +76,19 @@ interface ProjectShelfProps {
  * Shelf of PS2-style game cases. Games and software share one shelf;
  * the filter narrows it to either. Opening a case shows the TV + manual viewer.
  *
- * Mobile stack: the cases are thin and gapless, so a first tap pulls a case out
- * and a second tap opens it; a mis-tap never opens the wrong project.
+ * Pressing a case pulls it out briefly before the viewer fades in,
+ * so it's clear which one was opened.
  */
 export function ProjectShelf({ projects }: ProjectShelfProps) {
   const [filter, setFilter] = useState<Filter>('all');
   const [openProject, setOpenProject] = useState<Project | null>(null);
-  const [pulledOutId, setPulledOutId] = useState<string | null>(null);
-  const [isStack, setIsStack] = useState(false);
+  const [pressedId, setPressedId] = useState<string | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const openTimer = useRef<number>();
 
   const revealedImages = useSpineImageReveal(projects);
 
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)');
-    const update = () => setIsStack(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
+  useEffect(() => () => window.clearTimeout(openTimer.current), []);
 
   const visible = filter === 'all' ? projects : projects.filter((p) => p.kind === filter);
   const counts = {
@@ -102,18 +99,18 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
 
   const handleActivate = useCallback(
     (project: Project, trigger: HTMLButtonElement) => {
-      if (isStack && pulledOutId !== project._id) {
-        setPulledOutId(project._id);
-        return;
-      }
+      if (pressedId) return;
       triggerRef.current = trigger;
-      setOpenProject(project);
+      setPressedId(project._id);
+      const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : PRESS_MS;
+      openTimer.current = window.setTimeout(() => setOpenProject(project), delay);
     },
-    [isStack, pulledOutId]
+    [pressedId]
   );
 
   const handleClose = useCallback(() => {
     setOpenProject(null);
+    setPressedId(null);
     // Return focus to the case that was opened
     triggerRef.current?.focus();
   }, []);
@@ -135,10 +132,7 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
               key={f.id}
               type="button"
               aria-pressed={active}
-              onClick={() => {
-                setFilter(f.id);
-                setPulledOutId(null);
-              }}
+              onClick={() => setFilter(f.id)}
               className={`apple-press px-4 py-1.5 rounded-full text-xs font-semibold border ${
                 active
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400/30'
@@ -160,7 +154,7 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
               <GameSpine
                 project={project}
                 onActivate={handleActivate}
-                pulledOut={isStack && pulledOutId === project._id}
+                pressed={pressedId === project._id}
                 revealed={revealedImages}
               />
             </li>
@@ -172,7 +166,7 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
 
       <p className="mt-3 text-xs text-slate-400">
         <span className="hidden md:inline">Hover a case to pull it out, click to open.</span>
-        <span className="md:hidden">Tap a case to pull it out, tap again to open.</span>
+        <span className="md:hidden">Tap a case to open it.</span>
       </p>
 
       {openProject && <ProjectViewer project={openProject} onClose={handleClose} />}

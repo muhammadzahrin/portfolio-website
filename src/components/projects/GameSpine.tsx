@@ -6,8 +6,8 @@ import { Project } from '@/data/types';
 interface GameSpineProps {
   project: Project;
   onActivate: (project: Project, trigger: HTMLButtonElement) => void;
-  /** Mobile: pulled out of the stack by a first tap; a second tap opens it. */
-  pulledOut?: boolean;
+  /** Just pressed: pulled out and lit while the viewer opens. */
+  pressed?: boolean;
   /** Image URLs (spine art, client logos) the shelf has loaded and revealed together. */
   revealed?: Set<string>;
 }
@@ -27,7 +27,7 @@ interface GameSpineProps {
  * Mobile: the case lies flat (horizontal) in a gapless stack, sized by width.
  * Desktop (md+): the case stands upright on the shelf, sized by height.
  */
-export function GameSpine({ project, onActivate, pulledOut = false, revealed }: GameSpineProps) {
+export function GameSpine({ project, onActivate, pressed = false, revealed }: GameSpineProps) {
   const isGame = project.kind === 'game';
   const spineArt = project.assets?.spineArt;
   const clientLogo = project.assets?.clientLogo;
@@ -60,7 +60,7 @@ export function GameSpine({ project, onActivate, pulledOut = false, revealed }: 
         transition-[transform,box-shadow] duration-200 ease-out
         motion-safe:md:hover:-translate-y-3 motion-safe:md:focus-visible:-translate-y-3
         focus-visible:outline-offset-4
-        ${pulledOut ? 'spine-pulled translate-x-3 z-10' : ''}`}
+        ${pressed ? 'spine-pulled z-10 max-md:translate-x-3 md:-translate-y-3' : ''}`}
     >
       {/* Spine: 184 of the case's 190 mm, leaving 3 mm of black case at each end */}
       <span className="spine-art absolute inset-0 md:inset-y-[1.58%] flex flex-row md:flex-col overflow-hidden">
