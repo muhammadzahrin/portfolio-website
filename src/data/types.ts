@@ -72,7 +72,7 @@ export interface Project {
   assets?: {
     /**
      * Custom spine art for the art panel (everything after the "Zahrin" label band),
-     * authored lying flat at about 9.5:1, e.g. 1140 x 120. Replaces the plain title.
+     * authored lying flat at 1180 x 120 (see design/spine-art-template-explained.png). Replaces the plain title.
      */
     spineArt?: string;
     /**

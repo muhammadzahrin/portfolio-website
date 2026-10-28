@@ -209,12 +209,14 @@ html.disable-backdrop-blur .glass-card-surface {
   box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.8), 0 0 16px rgba(56, 189, 248, 0.5), 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
-/* Custom spine art fills the art panel, authored lying flat (about 9.5:1, e.g. 1140 x 120) */
+/* Custom spine art fills the art panel, authored lying flat at 1180 x 120 (template in design/).
+   Phones show its left end and crop the right, so the title stays visible on both */
 .spine-art-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-position: left;
 }
 
 @media (min-width: 768px) {
