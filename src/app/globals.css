@@ -281,18 +281,21 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   from { opacity: 0; }
 }
 
-/* TV size: on phones it's height-bound so TV + manual fit without scrolling */
+/*
+ * TV size: on phones it's height-bound so TV + manual fit without scrolling.
+ * Sizes leave a clear margin of page around the black glass panel to click off.
+ */
 .viewer-tv {
-  width: min(calc(100vw - 32px), calc((100vh - 140px) * 0.45));
-  width: min(calc(100vw - 32px), calc((100dvh - 140px) * 0.45));
+  width: min(calc(100vw - 112px), calc((100vh - 140px) * 0.38));
+  width: min(calc(100vw - 112px), calc((100dvh - 140px) * 0.38));
 }
 
 @media (min-width: 768px) {
-  .viewer-tv { width: 28rem; }
+  .viewer-tv { width: 22rem; }
 }
 
 @media (min-width: 1024px) {
-  .viewer-tv { width: min(38vw, 520px); }
+  .viewer-tv { width: min(32vw, 460px); }
 }
 
 /* CRT TV block-out */
@@ -408,17 +411,17 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 
 /* ---------- Game manual (4.5 x 7.125 pages) ---------- */
 .manual-size-single {
-  --pw: min(calc(100vw - 130px), 300px, calc((100vh - 140px) * 0.38));
-  --pw: min(calc(100vw - 130px), 300px, calc((100dvh - 140px) * 0.38));
+  --pw: min(calc(100vw - 200px), 280px, calc((100vh - 140px) * 0.32));
+  --pw: min(calc(100vw - 200px), 280px, calc((100dvh - 140px) * 0.32));
 }
 
 .manual-size-spread {
-  --pw: min(calc((100vw - 180px) / 2), calc((100vh - 120px) / 1.5833 * 0.62), 260px);
+  --pw: min(calc((100vw - 280px) / 2), calc((100vh - 120px) / 1.5833 * 0.55), 230px);
 }
 
 @media (min-width: 1024px) {
   .manual-size-spread {
-    --pw: min(calc((58vw - 160px) / 2), calc((100vh - 120px) / 1.5833), 300px);
+    --pw: min(calc((48vw - 160px) / 2), calc((100vh - 220px) / 1.5833), 280px);
   }
 }
 
