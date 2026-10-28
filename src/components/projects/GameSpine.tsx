@@ -54,7 +54,7 @@ export function GameSpine({ project, onActivate, pulledOut = false, revealed }: 
       onFocus={preloadCover}
       aria-label={`Open ${project.title} (${isGame ? 'game' : 'software'}, ${project.year})`}
       className={`game-spine group relative shrink-0 md:rounded-[2px] bg-[#070708] text-left
-        w-full aspect-[190/15]
+        w-full aspect-[169/15]
         md:w-auto md:max-w-none md:h-[clamp(380px,68vh,520px)] md:aspect-[15/190]
         shadow-[0_2px_6px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.07)]
         transition-[transform,box-shadow] duration-200 ease-out
@@ -63,7 +63,7 @@ export function GameSpine({ project, onActivate, pulledOut = false, revealed }: 
         ${pulledOut ? 'spine-pulled translate-x-3 z-10' : ''}`}
     >
       {/* Spine: 184 of the case's 190 mm, leaving 3 mm of black case at each end */}
-      <span className="spine-art absolute inset-y-0 inset-x-[1.58%] md:inset-x-0 md:inset-y-[1.58%] flex flex-row md:flex-col overflow-hidden">
+      <span className="spine-art absolute inset-0 md:inset-y-[1.58%] flex flex-row md:flex-col overflow-hidden">
         {/* Label band: brand logo square + name (where PS2 has its logo + "PlayStation 2") */}
         <span className={`${labelClass} spine-band flex flex-row md:flex-col items-center shrink-0`}>
           {/* Placeholder for my logo */}

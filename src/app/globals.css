@@ -271,8 +271,10 @@ html.disable-backdrop-blur .glass-card-surface {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* Phone shelf has no glass panel: the cases run edge to edge */
+/* Phone shelf has no glass panel: the cases run edge to edge.
+   Phone spines also drop the logo square and end caps (169:15 instead of 190:15) to stay taller */
 @media (max-width: 767px) {
+  .spine-mark { display: none; }
   .shelf-panel.glass-surface {
     background: none !important;
     backdrop-filter: none !important;
