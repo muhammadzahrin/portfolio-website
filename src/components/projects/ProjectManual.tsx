@@ -161,7 +161,7 @@ export function ProjectManual({ project, mode }: ProjectManualProps) {
   if (mode === 'single') {
     return (
       <div className="flex flex-col items-center gap-3">
-        <div data-keep-open className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <ArrowButton dir="prev" hidden={position === 0} onClick={() => go(-1)} />
           <div key={fadeKey} className={`manual-page relative [perspective:1600px] ${reducedMotion ? 'manual-fade' : ''}`}>
             {pages.map((page, i) => {
@@ -198,7 +198,7 @@ export function ProjectManual({ project, mode }: ProjectManualProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div data-keep-open className="flex items-center gap-4">
+      <div className="flex items-center gap-4">
         <ArrowButton dir="prev" hidden={position === 0} onClick={() => go(-1)} />
         <div key={fadeKey} className={`manual-spread relative [perspective:2000px] ${reducedMotion ? 'manual-fade' : ''}`}>
           <div

@@ -32,8 +32,8 @@ function DiscInsert({ project, className }: { project: Project; className: strin
 
 /**
  * Opened game case: TV (+ console on desktop) with the disc loading in, and the
- * game manual, over a darkened page. Clicking anywhere except the TV or the
- * manual closes it, as do Esc and the browser/phone back button.
+ * game manual, on a black glass panel. Clicking anywhere outside that panel
+ * closes it, as do Esc and the browser/phone back button.
  */
 export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
   const [phase, setPhase] = useState<TvPhase>('insert');
@@ -79,7 +79,8 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
     return () => window.removeEventListener('popstate', onPop);
   }, [onClose]);
 
-  // Esc to close; pause the wave canvas while a case is open (attention is on the TV).
+  // Esc to close; pause the wave canvas while a case is open (attention is on the TV),
+  // and switch off the page's own glass blurs so only the black glass panel blurs.
   // The page keeps its scrollbar and can still scroll behind the case.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -87,11 +88,13 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
     };
     window.addEventListener('keydown', onKey);
     window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: true } }));
+    document.documentElement.classList.add('case-open');
     dialogRef.current?.focus({ preventScroll: true });
 
     return () => {
       window.removeEventListener('keydown', onKey);
       window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: false } }));
+      document.documentElement.classList.remove('case-open');
     };
   }, [requestClose]);
 
@@ -116,10 +119,11 @@ export function ProjectViewer({ project, onClose }: ProjectViewerProps) {
         Close
       </button>
 
-      <div className="viewer-spotlight flex flex-col lg:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-12">
+      {/* The whole black glass panel (including its border area) keeps the case open */}
+      <div data-keep-open className="viewer-spotlight flex flex-col lg:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-12">
         {/* TV (+ console on desktop) */}
         {/* md:pb leaves room under the console for the disc rising into it */}
-        <div data-keep-open className="viewer-tv shrink-0 md:pb-20">
+        <div className="viewer-tv shrink-0 md:pb-20">
           <div className="crt-tv relative">
             <button
               type="button"

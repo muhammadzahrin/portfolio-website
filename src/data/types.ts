@@ -70,10 +70,17 @@ export interface Project {
    * to the generated placeholder, so the shelf works before any art exists.
    */
   assets?: {
-    /** Project logo for the template spine (SVG preferred). */
-    logo?: string;
-    /** Full custom spine art; replaces the template's middle panel (games). */
+    /**
+     * Custom spine art for the art panel (everything after the "Zahrin" label band),
+     * authored lying flat at about 9.5:1, e.g. 1140 x 120. Replaces the plain title.
+     */
     spineArt?: string;
+    /**
+     * Logo of who the project was made for, shown in a small square slot just
+     * before the year (SVG, single-colour white reads best). Leave out for
+     * personal projects: the slot stays empty so every title stays aligned.
+     */
+    clientLogo?: string;
     /** Manual cover, 4.5 x 7.125 ratio (e.g. 1000 x 1583). Also printed on the disc. */
     cover?: string;
     /** Short looping MP4 shown on the TV. */

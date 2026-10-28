@@ -7,6 +7,64 @@ import { ProjectViewer } from './ProjectViewer';
 
 type Filter = 'all' | 'game' | 'software';
 
+// After this long, show whatever spine images have loaded instead of waiting for the rest
+const IMAGE_REVEAL_TIMEOUT_MS = 3000;
+
+/**
+ * Preloads the shelf's spine images (custom spine art and client logos) and
+ * reveals them together, so spines don't pop in one by one. Anything still
+ * loading after the timeout appears as soon as it arrives. On data saver or 2G
+ * connections spine art is skipped (those visitors keep the text spines); the
+ * tiny client logos still load. Returns the URLs that are ready to show.
+ */
+function useSpineImageReveal(projects: Project[]): Set<string> {
+  const [shown, setShown] = useState<Set<string>>(() => new Set());
+
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    const saveData = !!connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? '');
+
+    const urls = Array.from(
+      new Set(
+        projects.flatMap((p) => [p.assets?.clientLogo, saveData ? undefined : p.assets?.spineArt]).filter((u): u is string => !!u)
+      )
+    );
+    if (urls.length === 0) return;
+
+    let cancelled = false;
+    let revealed = false;
+    const loaded = new Set<string>();
+    let settled = 0;
+
+    const reveal = () => {
+      if (cancelled) return;
+      revealed = true;
+      setShown(new Set(loaded));
+    };
+    const timer = window.setTimeout(reveal, IMAGE_REVEAL_TIMEOUT_MS);
+
+    urls.forEach((url) => {
+      const img = new Image();
+      img.onload = () => {
+        loaded.add(url);
+        if (revealed) reveal();
+        if (++settled === urls.length) reveal();
+      };
+      img.onerror = () => {
+        if (++settled === urls.length) reveal();
+      };
+      img.src = url;
+    });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [projects]);
+
+  return shown;
+}
+
 interface ProjectShelfProps {
   projects: Project[];
 }
@@ -24,6 +82,8 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
   const [pulledOutId, setPulledOutId] = useState<string | null>(null);
   const [isStack, setIsStack] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  const revealedImages = useSpineImageReveal(projects);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -96,7 +156,12 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
         <ul className="flex flex-col md:flex-row md:flex-wrap md:items-end md:gap-0.5 min-h-[30px] md:min-h-[380px]">
           {visible.map((project) => (
             <li key={project._id} className="flex md:contents">
-              <GameSpine project={project} onActivate={handleActivate} pulledOut={isStack && pulledOutId === project._id} />
+              <GameSpine
+                project={project}
+                onActivate={handleActivate}
+                pulledOut={isStack && pulledOutId === project._id}
+                revealed={revealedImages}
+              />
             </li>
           ))}
         </ul>

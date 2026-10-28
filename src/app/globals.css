@@ -159,34 +159,57 @@ html.disable-backdrop-blur .glass-card-surface {
   --t: 100cqh;
 }
 
-.spine-band { flex-basis: 12%; }
-.spine-year { flex-basis: 11%; font-size: calc(var(--t) * 0.3); }
+/* Label band: logo square + "Zahrin", like the PS2 logo band; ends right after the text */
+.spine-band {
+  flex-basis: auto;
+  gap: calc(var(--t) * 0.32);
+  padding: 0 calc(var(--t) * 0.22);
+  border-right: 1px solid rgba(0, 0, 0, 0.35);
+}
 
 .spine-mark {
-  width: calc(var(--t) * 0.66);
-  height: calc(var(--t) * 0.66);
-  font-size: calc(var(--t) * 0.34);
+  width: calc(var(--t) * 0.68);
+  height: calc(var(--t) * 0.68);
+  font-size: calc(var(--t) * 0.36);
 }
 
+.spine-brand {
+  font-family: var(--font-emotion-engine), system-ui, sans-serif;
+  font-size: calc(var(--t) * 0.42);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Art panel is its own container so custom art can size to it */
 .spine-panel {
+  container-type: size;
   gap: calc(var(--t) * 0.3);
-  padding: 0 calc(var(--t) * 0.35);
-}
-
-.spine-logo {
-  width: calc(var(--t) * 0.62);
-  height: calc(var(--t) * 0.62);
-  font-size: calc(var(--t) * 0.26);
+  padding: 0 calc(var(--t) * 0.4);
 }
 
 .spine-title { font-size: calc(var(--t) * 0.5); }
+.spine-year { font-size: calc(var(--t) * 0.28); }
+
+/* Client logo slot, same size as the brand logo square; reserved even when empty */
+.spine-client {
+  width: calc(var(--t) * 0.68);
+  height: calc(var(--t) * 0.68);
+}
+
+.spine-art-reveal {
+  animation: spine-art-reveal 300ms ease-out;
+}
+
+@keyframes spine-art-reveal {
+  from { opacity: 0; }
+}
 
 /* Mobile: case pulled out of the stack by a first tap */
 .spine-pulled {
   box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.8), 0 0 16px rgba(56, 189, 248, 0.5), 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
-/* Custom spine art is authored lying flat (184:15, e.g. 1472 x 120) */
+/* Custom spine art fills the art panel, authored lying flat (about 9.5:1, e.g. 1140 x 120) */
 .spine-art-img {
   position: absolute;
   inset: 0;
@@ -196,7 +219,12 @@ html.disable-backdrop-blur .glass-card-surface {
 
 @media (min-width: 768px) {
   .spine-art { --t: 100cqw; }
-  .spine-panel { padding: calc(var(--t) * 0.35) 0; }
+  .spine-band {
+    padding: calc(var(--t) * 0.22) 0;
+    border-right: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+  }
+  .spine-panel { padding: calc(var(--t) * 0.4) 0; }
 
   /* Upright on the shelf: turn the flat artwork to read top-to-bottom */
   .spine-art-img {
@@ -212,9 +240,15 @@ html.disable-backdrop-blur .glass-card-surface {
 /* ---------- Project viewer (opened case) ---------- */
 
 /*
- * Only the TV + manual area is darkened: solid black with a short, crisp fade
- * at the edge, so it's clear where "outside" (click to close) begins. The rest
- * of the page stays visible (and scrollable) around it.
+ * Only the TV + manual area sits on a black glass panel with sharp, defined
+ * edges; clicking anywhere on it keeps the case open, clicking outside closes.
+ * The rest of the page stays visible (and scrollable) around it.
+ *
+ * Performance: Chrome re-blurs a backdrop-filter on every frame that changes
+ * anything over it, and the TV animates (and will play video) on top of this
+ * panel. To keep that cost down, the glass panels on the page underneath stop
+ * blurring while a case is open (html.case-open), so it's one blur, not a blur
+ * of blurs.
  */
 .viewer-spotlight {
   position: relative;
@@ -227,10 +261,20 @@ html.disable-backdrop-blur .glass-card-surface {
   position: absolute;
   inset: -24px;
   z-index: -1;
-  border-radius: 32px;
-  background: #01040a;
-  box-shadow: 0 0 14px 6px #01040a;
-  pointer-events: none;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 18%),
+    rgba(2, 5, 12, 0.82);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+html.case-open main .glass-surface:not(.viewer-spotlight *),
+html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @keyframes viewer-fade-in {

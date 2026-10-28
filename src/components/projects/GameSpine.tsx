@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Project } from '@/data/types';
 
 interface GameSpineProps {
@@ -8,26 +8,31 @@ interface GameSpineProps {
   onActivate: (project: Project, trigger: HTMLButtonElement) => void;
   /** Mobile: pulled out of the stack by a first tap; a second tap opens it. */
   pulledOut?: boolean;
+  /** Image URLs (spine art, client logos) the shelf has loaded and revealed together. */
+  revealed?: Set<string>;
 }
 
 /**
  * PS2-style game case seen from the spine, locked to case proportions:
- * 15 mm x 190 mm black case, with the 15 x 184 mm spine art inset 3 mm from each end.
+ * 15 mm x 190 mm black case, with the 15 x 184 mm spine inset 3 mm from each end.
  * (Real spec is 14 mm; 15 reads better on screen.)
  *
- * Spine art template: label band (black = game, silver = software) / colour panel
- * with logo + title / year band. Custom spine art (games) covers the whole art area.
+ * Spine layout, following the PS2 spine:
+ *   label band: square brand logo + "Zahrin"  |  art panel: title, client logo slot, year
+ * Label band: black for games, silver for software.
+ * The art panel shows the title on the spine colour until custom spine art
+ * is revealed over it. The client logo slot is always reserved (empty for
+ * personal projects) so titles centre identically on every spine.
  *
  * Mobile: the case lies flat (horizontal) in a gapless stack, sized by width.
  * Desktop (md+): the case stands upright on the shelf, sized by height.
- *
- * Frame and title render instantly as real text; the logo and custom spine art
- * fade in once loaded, so slow connections still get a complete-looking shelf.
  */
-export function GameSpine({ project, onActivate, pulledOut = false }: GameSpineProps) {
-  const [logoLoaded, setLogoLoaded] = useState(false);
-  const [artLoaded, setArtLoaded] = useState(false);
+export function GameSpine({ project, onActivate, pulledOut = false, revealed }: GameSpineProps) {
   const isGame = project.kind === 'game';
+  const spineArt = project.assets?.spineArt;
+  const clientLogo = project.assets?.clientLogo;
+  const showArt = !!spineArt && !!revealed?.has(spineArt);
+  const showLogo = !!clientLogo && !!revealed?.has(clientLogo);
   const labelClass = isGame ? 'spine-label-game' : 'spine-label-software';
 
   // Warm the cover image so the manual is ready by the time it opens
@@ -48,7 +53,7 @@ export function GameSpine({ project, onActivate, pulledOut = false }: GameSpineP
       onPointerEnter={preloadCover}
       onFocus={preloadCover}
       aria-label={`Open ${project.title} (${isGame ? 'game' : 'software'}, ${project.year})`}
-      className={`game-spine group relative shrink-0 rounded-[2px] bg-[#070708]
+      className={`game-spine group relative shrink-0 rounded-[2px] bg-[#070708] text-left
         w-full max-w-[420px] aspect-[190/15]
         md:w-auto md:max-w-none md:h-[clamp(380px,68vh,520px)] md:aspect-[15/190]
         shadow-[0_2px_6px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.07)]
@@ -57,57 +62,40 @@ export function GameSpine({ project, onActivate, pulledOut = false }: GameSpineP
         focus-visible:outline-offset-4
         ${pulledOut ? 'spine-pulled translate-x-3 z-10' : ''}`}
     >
-      {/* Spine art area: 184 of the case's 190 mm, leaving 3 mm of black case at each end */}
+      {/* Spine: 184 of the case's 190 mm, leaving 3 mm of black case at each end */}
       <span className="spine-art absolute inset-y-0 inset-x-[1.58%] md:inset-x-0 md:inset-y-[1.58%] flex flex-row md:flex-col overflow-hidden">
-        {/* Label band: my mark (in place of a console logo) */}
-        <span className={`${labelClass} spine-band flex items-center justify-center shrink-0`}>
-          <span className="spine-mark rounded-full flex items-center justify-center font-black border border-current/40 bg-black/10">Z</span>
+        {/* Label band: brand logo square + name (where PS2 has its logo + "PlayStation 2") */}
+        <span className={`${labelClass} spine-band flex flex-row md:flex-col items-center shrink-0`}>
+          {/* Placeholder for my logo */}
+          <span className="spine-mark shrink-0 rounded-[3px] flex items-center justify-center font-black bg-white text-slate-900 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.15)]">
+            Z
+          </span>
+          <span className="spine-brand md:[writing-mode:vertical-rl]">Zahrin</span>
         </span>
 
-        {/* Colour panel: logo + title */}
+        {/* Art panel: title on the spine colour, or custom spine art */}
         <span
-          className="relative flex-1 min-w-0 md:min-h-0 flex flex-row md:flex-col items-center spine-panel text-white"
+          className="spine-panel relative flex-1 min-w-0 md:min-h-0 flex flex-row md:flex-col items-center text-white"
           style={{ background: `linear-gradient(180deg, rgba(255,255,255,0.14), transparent 40%, rgba(0,0,0,0.25)), ${project.spineColor}` }}
         >
-          <span className="spine-logo relative shrink-0 rounded-[3px] bg-white/15 border border-white/25 flex items-center justify-center font-bold">
-            <span className={logoLoaded ? 'opacity-0' : ''}>
-              {project.title
-                .split(' ')
-                .map((w) => w[0])
-                .join('')
-                .slice(0, 2)}
-            </span>
-            {project.assets?.logo && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={project.assets.logo}
-                alt=""
-                loading="lazy"
-                onLoad={() => setLogoLoaded(true)}
-                className={`absolute inset-0 w-full h-full object-contain p-px transition-opacity duration-300 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
-              />
-            )}
-          </span>
-          <span className="spine-title font-bold tracking-tight truncate min-w-0 md:min-h-0 md:[writing-mode:vertical-rl]">
+          <span className="spine-title flex-1 min-w-0 md:min-h-0 text-center font-bold tracking-tight truncate md:[writing-mode:vertical-rl]">
             {project.title}
           </span>
-        </span>
+          {/* Client logo slot: always takes its space, empty for personal projects */}
+          <span className="spine-client relative z-10 shrink-0 flex items-center justify-center">
+            {showLogo && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={clientLogo} alt="" aria-hidden="true" className="spine-art-reveal w-full h-full object-contain" />
+            )}
+          </span>
+          <span className="spine-year relative z-10 shrink-0 font-mono opacity-80 md:[writing-mode:vertical-rl]">{project.year}</span>
 
-        {/* Year band */}
-        <span className={`${labelClass} spine-year flex items-center justify-center shrink-0 font-mono`}>
-          <span className="md:[writing-mode:vertical-rl]">{project.year}</span>
+          {/* Only mounted once the shelf has preloaded it, so it never downloads on data saver */}
+          {showArt && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={spineArt} alt="" aria-hidden="true" className="spine-art-img spine-art-reveal object-cover" />
+          )}
         </span>
-
-        {project.assets?.spineArt && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={project.assets.spineArt}
-            alt=""
-            loading="lazy"
-            onLoad={() => setArtLoaded(true)}
-            className={`spine-art-img object-cover transition-opacity duration-300 ${artLoaded ? 'opacity-100' : 'opacity-0'}`}
-          />
-        )}
       </span>
 
       {/* Hover sheen */}
