@@ -313,16 +313,16 @@ html.disable-backdrop-blur .glass-card-surface {
 .memory-detail {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 12px; /* same as the space under the X, so the logo sits evenly between the X and the title */
   width: calc(100vw - 32px);
   height: calc(100vh - 84px);
   height: calc(100dvh - 84px);
 }
 
-/* Phones: top two fifths of the screen, under the X (82px = the dialog's top padding + half the gap) */
+/* Phones: top two fifths of the screen, under the X (74px = the dialog's top padding + half the gap) */
 .memory-stage {
-  flex: 0 0 calc(40vh - 82px);
-  flex: 0 0 calc(40dvh - 82px);
+  flex: 0 0 calc(40vh - 74px);
+  flex: 0 0 calc(40dvh - 74px);
   min-height: 0;
   display: flex;
   align-items: center;
@@ -378,10 +378,9 @@ html.disable-backdrop-blur .glass-card-surface {
 
 /* ---------- About: intro ---------- */
 
-/* Phones: a quarter of the screen tall, like the opened panel. Desktop: a quarter of the width */
+/* Phones: a quarter of the screen tall. vh, not dvh: dvh changes as Chrome's address bar hides, which would resize this and shift the page. Desktop: a quarter of the width */
 .about-portrait {
   width: 25vh;
-  width: 25dvh;
   aspect-ratio: 1;
 }
 
@@ -391,12 +390,25 @@ html.disable-backdrop-blur .glass-card-surface {
   }
 }
 
-/* The second paragraph fades out into Read more */
+/* The second paragraph blurs and fades out into Read more. clip, not hidden: it must not be able to scroll to mid-text */
 .about-fade {
+  position: relative;
   max-height: 4.875em;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(#000, transparent);
-  mask-image: linear-gradient(#000, transparent);
+  overflow: clip;
+  -webkit-mask-image: linear-gradient(#000 30%, transparent);
+  mask-image: linear-gradient(#000 30%, transparent);
+}
+
+/* The mask above limits this blur to the paragraph's own text */
+.about-fade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  -webkit-mask-image: linear-gradient(transparent, #000 70%);
+  mask-image: linear-gradient(transparent, #000 70%);
 }
 
 /* ---------- Project viewer (opened case) ---------- */

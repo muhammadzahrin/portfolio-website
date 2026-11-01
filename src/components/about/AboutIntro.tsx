@@ -31,19 +31,22 @@ export function AboutIntro() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-      <div className="about-portrait shrink-0">
-        <Portrait />
+    <>
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 rounded-2xl glass-surface border border-sky-400/20 p-4 md:p-8">
+        <div className="about-portrait shrink-0">
+          <Portrait />
+        </div>
+
+        <div ref={wrapperRef} className="min-w-0 flex-1 text-sm sm:text-base leading-relaxed text-slate-300">
+          <p>{first}</p>
+          <p className="about-fade mt-3">{second}</p>
+          <GlassButton variant="secondary" size="sm" className="mt-2" onClick={() => setOpen(true)}>
+            Read more
+          </GlassButton>
+        </div>
       </div>
 
-      <div ref={wrapperRef} className="min-w-0 flex-1 text-sm sm:text-base leading-relaxed text-slate-300">
-        <p>{first}</p>
-        <p className="about-fade mt-3">{second}</p>
-        <GlassButton variant="secondary" size="sm" className="mt-2" onClick={() => setOpen(true)}>
-          Read more
-        </GlassButton>
-      </div>
-
+      {/* Outside the glass: a blur on a parent would pin the full-screen panel to that parent */}
       {open && (
         <DetailPanel art={<Portrait />} eyebrow="About me" title={aboutData.name} subtitle={aboutData.headline} onClose={handleClose}>
           {aboutData.bioParagraphs.map((para) => (
@@ -53,6 +56,6 @@ export function AboutIntro() {
           ))}
         </DetailPanel>
       )}
-    </div>
+    </>
   );
 }
