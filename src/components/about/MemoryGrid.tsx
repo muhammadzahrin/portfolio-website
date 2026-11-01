@@ -2,9 +2,9 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Memory, MemoryCategory } from '@/data/types';
-import { BlackGlassDialog } from '@/components/ui/BlackGlassDialog';
 import { FilterPills } from '@/components/ui/FilterPills';
 import { BriefcaseIcon, GamepadIcon, GraduationCapIcon, SparklesIcon } from '@/components/ui/Icons';
+import { DetailPanel } from './DetailPanel';
 
 type Filter = 'all' | MemoryCategory;
 
@@ -40,82 +40,46 @@ function MemoryArt({ memory }: { memory: Memory }) {
 }
 
 function MemoryDetail({ memory, onClose }: { memory: Memory; onClose: () => void }) {
-  const textRef = useRef<HTMLDivElement | null>(null);
-
-  // Only the text scrolls: wheel and touch scrolling elsewhere must not move the page behind
-  useEffect(() => {
-    const blockPageScroll = (e: Event) => {
-      const text = textRef.current;
-      const target = e.target as Element;
-      const canScroll = text?.contains(target) && (text.scrollHeight > text.clientHeight || target.closest('.memory-photos'));
-      if (!canScroll) e.preventDefault();
-    };
-    window.addEventListener('wheel', blockPageScroll, { passive: false });
-    window.addEventListener('touchmove', blockPageScroll, { passive: false });
-    return () => {
-      window.removeEventListener('wheel', blockPageScroll);
-      window.removeEventListener('touchmove', blockPageScroll);
-    };
-  }, []);
-
   return (
-    <BlackGlassDialog label={memory.title} onClose={onClose}>
-      <div className="memory-detail">
-        <div className="memory-stage">
-          <div className="memory-spin">
-            <MemoryArt memory={memory} />
-          </div>
+    <DetailPanel
+      art={<MemoryArt memory={memory} />}
+      eyebrow={CATEGORY_LABELS[memory.category]}
+      title={memory.title}
+      subtitle={memory.subtitle}
+      onClose={onClose}
+    >
+      {memory.facts && (
+        <dl className="space-y-2 text-sm">
+          {memory.facts.map((fact) => (
+            <div key={fact.label}>
+              <dt className="text-xs text-slate-400">{fact.label}</dt>
+              <dd className="text-slate-100">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {memory.body.map((para) => (
+        <p key={para} className="text-sm leading-relaxed text-slate-300">
+          {para}
+        </p>
+      ))}
+
+      {memory.photos && (
+        <div className="memory-photos flex gap-2 overflow-x-auto snap-x">
+          {memory.photos.map((photo, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={photo}
+              src={photo}
+              alt={`${memory.title}, photo ${i + 1}`}
+              loading="lazy"
+              className="h-36 w-auto rounded-lg snap-start"
+            />
+          ))}
         </div>
-
-        <div className="memory-info">
-          <div className="shrink-0 text-center">
-            <p className="text-[11px] font-mono uppercase tracking-wider text-sky-300">{CATEGORY_LABELS[memory.category]}</p>
-            <h2 className="memory-name mt-1 text-xl sm:text-2xl text-amber-200">{memory.title}</h2>
-            <p className="mt-0.5 text-sm text-slate-200">{memory.subtitle}</p>
-          </div>
-
-          <div
-            ref={textRef}
-            tabIndex={0}
-            role="region"
-            aria-label={`About ${memory.title}`}
-            className="memory-text mt-4 space-y-4 rounded-xl border border-white/10 bg-white/[0.03] p-4"
-          >
-            {memory.facts && (
-              <dl className="space-y-2 text-sm">
-                {memory.facts.map((fact) => (
-                  <div key={fact.label}>
-                    <dt className="text-xs text-slate-400">{fact.label}</dt>
-                    <dd className="text-slate-100">{fact.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-
-            {memory.body.map((para) => (
-              <p key={para} className="text-sm leading-relaxed text-slate-300">
-                {para}
-              </p>
-            ))}
-
-            {memory.photos && (
-              <div className="memory-photos flex gap-2 overflow-x-auto snap-x">
-                {memory.photos.map((photo, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={photo}
-                    src={photo}
-                    alt={`${memory.title}, photo ${i + 1}`}
-                    loading="lazy"
-                    className="h-36 w-auto rounded-lg snap-start"
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </BlackGlassDialog>
+      )}
+    </DetailPanel>
   );
 }
 

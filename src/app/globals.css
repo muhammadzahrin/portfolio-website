@@ -319,8 +319,12 @@ html.disable-backdrop-blur .glass-card-surface {
   height: calc(100dvh - 84px);
 }
 
+/* Phones: the top quarter of the screen, up beside the X (-68px undoes the dialog's top padding) */
 .memory-stage {
-  flex: 1;
+  flex: 0 0 25vh;
+  flex: 0 0 25dvh;
+  margin-top: -68px;
+  padding-top: 12px;
   min-height: 0;
   display: flex;
   align-items: center;
@@ -365,12 +369,37 @@ html.disable-backdrop-blur .glass-card-surface {
 
   .memory-stage {
     flex: 0 0 40%;
+    margin-top: 0;
+    padding-top: 0;
   }
 
   .memory-info {
     min-width: 0;
     justify-content: center;
   }
+}
+
+/* ---------- About: intro ---------- */
+
+/* Phones: a quarter of the screen tall, like the opened panel. Desktop: a quarter of the width */
+.about-portrait {
+  width: 25vh;
+  width: 25dvh;
+  aspect-ratio: 1;
+}
+
+@media (min-width: 768px) {
+  .about-portrait {
+    width: 25%;
+  }
+}
+
+/* The second paragraph fades out into Read more */
+.about-fade {
+  max-height: 4.875em;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000, transparent);
+  mask-image: linear-gradient(#000, transparent);
 }
 
 /* ---------- Project viewer (opened case) ---------- */

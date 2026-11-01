@@ -124,5 +124,6 @@ export interface AboutContent {
   name: string;
   headline: string;
   bioParagraphs: string[];
-  focusAreas: string[];
+  /** Square photo, e.g. 800 x 800. Without one a generated tile is shown. */
+  portrait?: string;
 }

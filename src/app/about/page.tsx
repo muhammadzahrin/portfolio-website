@@ -4,6 +4,7 @@ import { aboutData } from '@/data/about';
 import { memoriesData } from '@/data/memories';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Section } from '@/components/ui/Section';
+import { AboutIntro } from '@/components/about/AboutIntro';
 import { MemoryGrid } from '@/components/about/MemoryGrid';
 
 export const metadata: Metadata = {
@@ -19,12 +20,7 @@ export default function AboutPage() {
       <PageHeader title="About Me" subtitle={aboutData.headline} />
 
       <Section id="about-bio" className="pt-0 sm:pt-0 md:pt-0">
-        <div className="max-w-3xl space-y-3 text-sm sm:text-base leading-relaxed text-slate-300">
-          {aboutData.bioParagraphs.map((para) => (
-            <p key={para}>{para}</p>
-          ))}
-          <p className="text-xs sm:text-sm text-slate-400">Focus areas: {aboutData.focusAreas.join(' · ')}</p>
-        </div>
+        <AboutIntro />
       </Section>
 
       <Section id="about-memories" className="pt-0 sm:pt-0 md:pt-0">
