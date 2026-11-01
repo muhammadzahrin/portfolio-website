@@ -1,0 +1,209 @@
+'use client';
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Memory, MemoryCategory } from '@/data/types';
+import { BlackGlassDialog } from '@/components/ui/BlackGlassDialog';
+import { FilterPills } from '@/components/ui/FilterPills';
+import { BriefcaseIcon, GamepadIcon, GraduationCapIcon, SparklesIcon } from '@/components/ui/Icons';
+
+type Filter = 'all' | MemoryCategory;
+
+const CATEGORY_LABELS: Record<MemoryCategory, string> = {
+  education: 'Education',
+  'hard-skill': 'Hard skills',
+  'soft-skill': 'Soft skills',
+  event: 'Events',
+};
+
+const TILES: Record<MemoryCategory, { color: string; Icon: typeof SparklesIcon }> = {
+  education: { color: '#2f7fd6', Icon: GraduationCapIcon },
+  'hard-skill': { color: '#1f9d8b', Icon: GamepadIcon },
+  'soft-skill': { color: '#a0529e', Icon: SparklesIcon },
+  event: { color: '#c8782a', Icon: BriefcaseIcon },
+};
+
+// How long the pressed memory shows before the detail panel starts fading in
+const PRESS_MS = 180;
+
+/** The memory's 2D image, or a generated tile until there is one. */
+function MemoryArt({ memory }: { memory: Memory }) {
+  if (memory.image) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={memory.image} alt="" className="memory-art w-full h-full object-contain" />;
+  }
+  const { color, Icon } = TILES[memory.category];
+  return (
+    <span className="memory-art memory-tile" style={{ '--tile': color } as React.CSSProperties}>
+      <Icon className="w-[42%] h-[42%] text-white drop-shadow" />
+    </span>
+  );
+}
+
+function MemoryDetail({ memory, onClose }: { memory: Memory; onClose: () => void }) {
+  const textRef = useRef<HTMLDivElement | null>(null);
+
+  // Only the text scrolls: wheel and touch scrolling elsewhere must not move the page behind
+  useEffect(() => {
+    const blockPageScroll = (e: Event) => {
+      const text = textRef.current;
+      const target = e.target as Element;
+      const canScroll = text?.contains(target) && (text.scrollHeight > text.clientHeight || target.closest('.memory-photos'));
+      if (!canScroll) e.preventDefault();
+    };
+    window.addEventListener('wheel', blockPageScroll, { passive: false });
+    window.addEventListener('touchmove', blockPageScroll, { passive: false });
+    return () => {
+      window.removeEventListener('wheel', blockPageScroll);
+      window.removeEventListener('touchmove', blockPageScroll);
+    };
+  }, []);
+
+  return (
+    <BlackGlassDialog label={memory.title} onClose={onClose}>
+      <div className="memory-detail">
+        <div className="memory-stage">
+          <div className="memory-spin">
+            <MemoryArt memory={memory} />
+          </div>
+        </div>
+
+        <div className="memory-info">
+          <div className="shrink-0 text-center">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-sky-300">{CATEGORY_LABELS[memory.category]}</p>
+            <h2 className="memory-name mt-1 text-xl sm:text-2xl text-amber-200">{memory.title}</h2>
+            <p className="mt-0.5 text-sm text-slate-200">{memory.subtitle}</p>
+          </div>
+
+          <div
+            ref={textRef}
+            tabIndex={0}
+            role="region"
+            aria-label={`About ${memory.title}`}
+            className="memory-text mt-4 space-y-4 rounded-xl border border-white/10 bg-white/[0.03] p-4"
+          >
+            {memory.facts && (
+              <dl className="space-y-2 text-sm">
+                {memory.facts.map((fact) => (
+                  <div key={fact.label}>
+                    <dt className="text-xs text-slate-400">{fact.label}</dt>
+                    <dd className="text-slate-100">{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+
+            {memory.body.map((para) => (
+              <p key={para} className="text-sm leading-relaxed text-slate-300">
+                {para}
+              </p>
+            ))}
+
+            {memory.photos && (
+              <div className="memory-photos flex gap-2 overflow-x-auto snap-x">
+                {memory.photos.map((photo, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={photo}
+                    src={photo}
+                    alt={`${memory.title}, photo ${i + 1}`}
+                    loading="lazy"
+                    className="h-36 w-auto rounded-lg snap-start"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </BlackGlassDialog>
+  );
+}
+
+interface MemoryGridProps {
+  memories: Memory[];
+}
+
+/**
+ * Grid of tilted memories on a glass panel, after the PS2 memory card screen.
+ * Desktop: hovering selects, and the selected name shows top right.
+ * Phones have no hover, so every name sits under its memory and one tap opens it.
+ */
+export function MemoryGrid({ memories }: MemoryGridProps) {
+  const [filter, setFilter] = useState<Filter>('all');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pressedId, setPressedId] = useState<string | null>(null);
+  const [openMemory, setOpenMemory] = useState<Memory | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const openTimer = useRef<number>();
+
+  useEffect(() => () => window.clearTimeout(openTimer.current), []);
+
+  const visible = filter === 'all' ? memories : memories.filter((m) => m.category === filter);
+  const selected = visible.find((m) => m._id === selectedId) ?? visible[0];
+
+  const handleOpen = (memory: Memory, trigger: HTMLButtonElement) => {
+    if (pressedId) return;
+    triggerRef.current = trigger;
+    setPressedId(memory._id);
+    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : PRESS_MS;
+    openTimer.current = window.setTimeout(() => setOpenMemory(memory), delay);
+  };
+
+  const handleClose = useCallback(() => {
+    setOpenMemory(null);
+    setPressedId(null);
+    // Return focus to the memory that was opened
+    triggerRef.current?.focus();
+  }, []);
+
+  const filters: { id: Filter; label: string; count: number }[] = [
+    { id: 'all', label: 'All', count: memories.length },
+    ...(Object.keys(CATEGORY_LABELS) as MemoryCategory[]).map((id) => ({
+      id,
+      label: CATEGORY_LABELS[id],
+      count: memories.filter((m) => m.category === id).length,
+    })),
+  ];
+
+  return (
+    <div>
+      <FilterPills label="Filter memories" filters={filters} value={filter} onChange={setFilter} />
+
+      <div className="relative rounded-2xl glass-surface border border-sky-400/20 p-4 md:p-8">
+        {/* Selected name: fixed height so the grid doesn't shift as it changes */}
+        <div className="hidden md:block text-right h-16 mb-4">
+          {selected && (
+            <>
+              <p className="memory-name text-2xl text-amber-200 truncate">{selected.title}</p>
+              <p className="mt-1 text-sm text-slate-300 truncate">{selected.subtitle}</p>
+            </>
+          )}
+        </div>
+
+        <ul className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-x-6 gap-y-5 md:gap-y-8">
+          {visible.map((memory) => (
+            <li key={memory._id}>
+              <button
+                type="button"
+                onClick={(e) => handleOpen(memory, e.currentTarget)}
+                onPointerEnter={() => setSelectedId(memory._id)}
+                onFocus={() => setSelectedId(memory._id)}
+                aria-label={`Open ${memory.title} (${memory.subtitle})`}
+                className={`memory-item block w-full ${memory._id === selected?._id ? 'memory-selected' : ''} ${
+                  memory._id === pressedId ? 'memory-pressed' : ''
+                }`}
+              >
+                <span className="memory-icon">
+                  <MemoryArt memory={memory} />
+                </span>
+                <span className="md:hidden mt-1.5 block text-center text-[11px] leading-tight text-slate-200">{memory.title}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {openMemory && <MemoryDetail memory={openMemory} onClose={handleClose} />}
+    </div>
+  );
+}

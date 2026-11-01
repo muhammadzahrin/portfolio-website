@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Project } from '@/data/types';
+import { FilterPills } from '@/components/ui/FilterPills';
 import { GameSpine } from './GameSpine';
 import { ProjectViewer } from './ProjectViewer';
 
@@ -91,11 +92,6 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
   useEffect(() => () => window.clearTimeout(openTimer.current), []);
 
   const visible = filter === 'all' ? projects : projects.filter((p) => p.kind === filter);
-  const counts = {
-    all: projects.length,
-    game: projects.filter((p) => p.kind === 'game').length,
-    software: projects.filter((p) => p.kind === 'software').length,
-  };
 
   const handleActivate = useCallback(
     (project: Project, trigger: HTMLButtonElement) => {
@@ -115,35 +111,15 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
     triggerRef.current?.focus();
   }, []);
 
-  const filters: { id: Filter; label: string }[] = [
-    { id: 'all', label: 'All' },
-    { id: 'game', label: 'Games' },
-    { id: 'software', label: 'Software' },
+  const filters: { id: Filter; label: string; count: number }[] = [
+    { id: 'all', label: 'All', count: projects.length },
+    { id: 'game', label: 'Games', count: projects.filter((p) => p.kind === 'game').length },
+    { id: 'software', label: 'Software', count: projects.filter((p) => p.kind === 'software').length },
   ];
 
   return (
     <div>
-      {/* Filter */}
-      <div role="group" aria-label="Filter projects" className="flex flex-wrap items-center gap-1 mb-6 p-1.5 rounded-full glass-surface w-fit border border-white/10">
-        {filters.map((f) => {
-          const active = filter === f.id;
-          return (
-            <button
-              key={f.id}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setFilter(f.id)}
-              className={`apple-press px-4 py-1.5 rounded-full text-xs font-semibold border ${
-                active
-                  ? 'bg-sky-500/20 text-sky-200 border-sky-400/30'
-                  : 'text-slate-300 border-transparent hover:text-white hover:bg-white/5'
-              }`}
-            >
-              {f.label} ({counts[f.id]})
-            </button>
-          );
-        })}
-      </div>
+      <FilterPills label="Filter projects" filters={filters} value={filter} onChange={setFilter} />
 
       {/* Shelf: vertical stack on mobile, upright row on desktop */}
       {/* Phone: edge to edge with no panel; clip-x so a pulled-out case can't cause sideways scroll */}

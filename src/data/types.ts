@@ -100,31 +100,22 @@ export interface ProjectManualInfo {
   links: { label: string; href: string }[];
 }
 
-export interface Highlight {
+export type MemoryCategory = 'education' | 'hard-skill' | 'soft-skill' | 'event';
+
+/** One "save" on the About page's memory grid. */
+export interface Memory {
   _id: string;
-  _type: 'highlight';
+  _type: 'memory';
   title: string;
-  event: string;
-  role: string;
-  whatILearnt: string;
-  sourceNote: string;
-  date: string;
-}
-
-export interface Education {
-  _id: string;
-  _type: 'education';
-  qualification: string;
-  institution: string;
-  status: string;
-  dates: string;
-  note: string;
-}
-
-export interface SkillCategory {
-  _id: string;
-  categoryName: string;
-  skills: string[];
+  /** Second line under the name, e.g. dates or a skill group */
+  subtitle: string;
+  category: MemoryCategory;
+  /** 2D image of any shape, tilted in the grid and spinning when opened. Without one a generated tile is shown. */
+  image?: string;
+  facts?: { label: string; value: string }[];
+  body: string[];
+  /** Gallery shown when the memory is opened */
+  photos?: string[];
 }
 
 export interface AboutContent {
@@ -133,7 +124,5 @@ export interface AboutContent {
   name: string;
   headline: string;
   bioParagraphs: string[];
-  education: Education[];
-  skillCategories: SkillCategory[];
   focusAreas: string[];
 }
