@@ -110,6 +110,8 @@ export interface Memory {
   /** Second line under the name, e.g. dates or a skill group */
   subtitle: string;
   category: MemoryCategory;
+  /** Year or full date for sorting, e.g. '2024' or '2024-03'. Undated memories sort last. */
+  date?: string;
   /** 2D image of any shape, tilted in the grid and spinning when opened. Without one a generated tile is shown. */
   image?: string;
   facts?: { label: string; value: string }[];

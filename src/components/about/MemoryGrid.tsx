@@ -22,6 +22,18 @@ const TILES: Record<MemoryCategory, { color: string; Icon: typeof SparklesIcon }
   event: { color: '#c8782a', Icon: BriefcaseIcon },
 };
 
+// Undated memories go last, whichever way the dates run
+const byDate = (direction: 1 | -1) => (a: Memory, b: Memory) =>
+  a.date && b.date ? direction * a.date.localeCompare(b.date) : Number(!a.date) - Number(!b.date);
+
+// Type is the data's own order: education, skills, events
+const SORTS: { id: string; label: string; compare?: (a: Memory, b: Memory) => number }[] = [
+  { id: 'type', label: 'Type' },
+  { id: 'name', label: 'Name', compare: (a, b) => a.title.localeCompare(b.title) },
+  { id: 'newest', label: 'Newest', compare: byDate(-1) },
+  { id: 'oldest', label: 'Oldest', compare: byDate(1) },
+];
+
 // How long the pressed memory shows before the detail panel starts fading in
 const PRESS_MS = 180;
 
@@ -94,6 +106,7 @@ interface MemoryGridProps {
  */
 export function MemoryGrid({ memories }: MemoryGridProps) {
   const [filter, setFilter] = useState<Filter>('all');
+  const [sort, setSort] = useState('type');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pressedId, setPressedId] = useState<string | null>(null);
   const [openMemory, setOpenMemory] = useState<Memory | null>(null);
@@ -102,7 +115,9 @@ export function MemoryGrid({ memories }: MemoryGridProps) {
 
   useEffect(() => () => window.clearTimeout(openTimer.current), []);
 
-  const visible = filter === 'all' ? memories : memories.filter((m) => m.category === filter);
+  const filtered = filter === 'all' ? memories : memories.filter((m) => m.category === filter);
+  const compare = SORTS.find((s) => s.id === sort)?.compare;
+  const visible = compare ? [...filtered].sort(compare) : filtered;
   const selected = visible.find((m) => m._id === selectedId) ?? visible[0];
 
   const handleOpen = (memory: Memory, trigger: HTMLButtonElement) => {
@@ -131,6 +146,10 @@ export function MemoryGrid({ memories }: MemoryGridProps) {
 
   return (
     <div>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs text-slate-400">Sort by</span>
+        <FilterPills label="Sort memories" filters={SORTS} value={sort} onChange={setSort} className="" />
+      </div>
       <FilterPills label="Filter memories" filters={filters} value={filter} onChange={setFilter} />
 
       <div className="relative rounded-2xl glass-surface border border-sky-400/20 p-4 md:p-8">

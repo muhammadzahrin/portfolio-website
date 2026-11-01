@@ -56,6 +56,7 @@ export const memoriesData: Memory[] = [
     _type: 'memory',
     title: 'Founding the Performing Arts Club',
     subtitle: '2023 - 2024',
+    date: '2023',
     category: 'event',
     facts: [
       { label: 'Event', value: 'UniKL MIIT Performing Arts Club Establishment & Campus Productions' },
@@ -68,6 +69,7 @@ export const memoriesData: Memory[] = [
     _type: 'memory',
     title: 'Building "Expired" with Pygame',
     subtitle: '2023',
+    date: '2023',
     category: 'event',
     facts: [
       { label: 'Event', value: 'Game Jam / Indie Development Milestone' },
@@ -80,6 +82,7 @@ export const memoriesData: Memory[] = [
     _type: 'memory',
     title: 'Malaysian Game Industry Meetups',
     subtitle: '2024',
+    date: '2024',
     category: 'event',
     facts: [
       { label: 'Event', value: 'Local Game Developers Community & Industry Insights' },
