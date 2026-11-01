@@ -73,7 +73,8 @@ export function BlackGlassDialog({ label, onClose, className = '', children }: B
       className="fixed inset-0 z-[100] overflow-hidden flex items-center justify-center p-4 max-md:pt-[68px] outline-none"
       onClick={(e) => {
         // Phones: the panel fills the screen, so only the X closes it
-        if (isWide && !(e.target as HTMLElement).closest('[data-keep-open]')) requestClose();
+        // (the Close button handles itself: closing twice would go back two pages)
+        if (isWide && !(e.target as HTMLElement).closest('[data-keep-open], button')) requestClose();
       }}
     >
       {isWide ? (

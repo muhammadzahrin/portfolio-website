@@ -37,6 +37,15 @@ export const memoriesData: Memory[] = [
   ...['Git & GitHub', 'VS Code', 'Enterprise IT Support', 'Technical Documentation'].map((s) =>
     skill(s, 'IT & Tools', 'hard-skill')
   ),
+  {
+    ...skill('Claude', 'IT & Tools', 'hard-skill'),
+    image: '/memories/claude.svg',
+    body: Array.from(
+      { length: 6 },
+      (_, i) =>
+        `[Placeholder paragraph ${i + 1}: long sample text to show how scrolling works. Replace this with where I used Claude and what I made with it. It only needs to be long enough to overflow the text box on a phone and on desktop.]`
+    ),
+  },
 
   ...['Performing Arts Leadership', 'Event Production', 'Cross-team Communication', 'Creative Direction'].map((s) =>
     skill(s, 'Leadership & Creative', 'soft-skill')

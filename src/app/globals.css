@@ -334,15 +334,15 @@ html.disable-backdrop-blur .glass-card-surface {
   animation: memory-spin 4s linear infinite;
 }
 
-/* Half a turn, edge-on to edge-on, repeating: a flat image never shows its mirrored back */
+/* Clockwise seen from above. Half a turn, edge-on to edge-on, repeating: a flat image never shows its mirrored back */
 @keyframes memory-spin {
-  from { transform: rotateY(-90deg); }
-  to { transform: rotateY(90deg); }
+  from { transform: rotateY(90deg); }
+  to { transform: rotateY(-90deg); }
 }
 
 .memory-info {
+  flex: 1;
   min-height: 0;
-  max-height: 62%;
   display: flex;
   flex-direction: column;
 }
@@ -368,9 +368,7 @@ html.disable-backdrop-blur .glass-card-surface {
   }
 
   .memory-info {
-    flex: 1;
     min-width: 0;
-    max-height: none;
     justify-content: center;
   }
 }

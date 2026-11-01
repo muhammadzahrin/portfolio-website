@@ -180,7 +180,7 @@ export function MemoryGrid({ memories }: MemoryGridProps) {
           )}
         </div>
 
-        <ul className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-x-6 gap-y-5 md:gap-y-8">
+        <ul className="grid grid-cols-4 md:grid-cols-5 gap-x-3.5 gap-y-5 md:gap-x-14 md:gap-y-10">
           {visible.map((memory) => (
             <li key={memory._id}>
               <button
