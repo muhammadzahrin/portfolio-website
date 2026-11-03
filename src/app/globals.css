@@ -362,8 +362,9 @@ html.disable-backdrop-blur .glass-card-surface {
   .memory-detail {
     flex-direction: row;
     gap: 32px;
-    width: min(calc(100vw - 160px), 760px);
-    height: min(calc(100dvh - 160px), 420px);
+    /* about the size of the open game case: 1024x470 at 1280x720, 1180x514 at 1920x1080 */
+    width: min(calc(100vw - 160px), 80vw, 1180px);
+    height: min(calc(100dvh - 160px), 514px);
   }
 
   .memory-stage {
