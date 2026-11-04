@@ -53,10 +53,12 @@ export function BlackGlassDialog({ label, onClose, className = '', children }: B
     };
     window.addEventListener('keydown', onKey);
     window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: true } }));
-    document.documentElement.classList.add('case-open');
+    // After the 300ms fade-in, so the page glass doesn't turn clear while the panel is still see-through
+    const blurOff = setTimeout(() => document.documentElement.classList.add('case-open'), 300);
     dialogRef.current?.focus({ preventScroll: true });
 
     return () => {
+      clearTimeout(blurOff);
       window.removeEventListener('keydown', onKey);
       window.dispatchEvent(new CustomEvent('portfolio:pause-bg', { detail: { paused: false } }));
       document.documentElement.classList.remove('case-open');
