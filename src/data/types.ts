@@ -37,6 +37,8 @@ export interface WorkExperience {
   startDate: string;
   endDate: string;
   isCurrent: boolean;
+  /** Company logo for the Home page's "Currently" bubble (square, transparent). Without one, initials are shown. */
+  logo?: string;
   bullets: string[];
   /**
    * TODO: confirm with supervisor before publishing.

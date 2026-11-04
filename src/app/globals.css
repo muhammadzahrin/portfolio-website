@@ -377,6 +377,30 @@ html.disable-backdrop-blur .glass-card-surface {
   }
 }
 
+/* ---------- Home ---------- */
+
+/* Fills the screen under the navbar, so the footer only shows on scroll. svh, not dvh: constant while Chrome's address bar hides */
+.home {
+  min-height: calc(100vh - 80px);
+  min-height: calc(100svh - 80px);
+}
+
+.home-panels {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+}
+
+/* 12fr:16fr with 4:3 and 16:9 panels gives both the same height (9 units);
+   the max-width caps that height at the screen height left over after the navbar and intro */
+@media (min-width: 768px) {
+  .home-panels {
+    grid-template-columns: 12fr 16fr;
+    max-width: calc((100vh - 330px) * 28 / 9 + 16px);
+    margin-inline: auto;
+  }
+}
+
 /* ---------- About: intro ---------- */
 
 /* Phones: a quarter of the screen tall. vh, not dvh: dvh changes as Chrome's address bar hides, which would resize this and shift the page. Desktop: a quarter of the width */
