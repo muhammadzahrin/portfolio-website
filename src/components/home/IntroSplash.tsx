@@ -85,10 +85,10 @@ export function IntroSplash() {
             { opacity: 0, filter: `blur(40px) ${GLOW}` },
             { opacity: 1, filter: `blur(0px) ${GLOW}` },
           ],
-          { duration: 1500, easing: 'ease-out', fill: 'forwards' },
+          { duration: 1000, easing: 'ease-out', fill: 'forwards' },
         ),
       );
-      await wait(1000);
+      await wait(500);
       if (cancelled) return;
 
       await run(

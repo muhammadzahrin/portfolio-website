@@ -517,23 +517,6 @@ html.disable-backdrop-blur .glass-card-surface {
   to { transform: scaleX(0); }
 }
 
-/* Home panels as Frutiger Aero glass: a frosted frame with a glossy top half over the picture */
-.aero-panel {
-  background: rgba(186, 230, 253, 0.08);
-  -webkit-backdrop-filter: blur(8px) saturate(150%);
-  backdrop-filter: blur(8px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 0 18px rgba(125, 211, 252, 0.12), 0 10px 30px -8px rgba(0, 0, 0, 0.5);
-}
-
-.aero-panel::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 45%, transparent 55%);
-}
 
 @keyframes bubble-wave {
   0%, 60%, 100% { transform: rotate(0deg); }

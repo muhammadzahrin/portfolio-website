@@ -60,7 +60,7 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
 
   return (
     <div
-      className={`group relative rounded-2xl aero-panel touch-pan-y ${className}`}
+      className={`group relative rounded-2xl glass-surface border border-sky-400/20 touch-pan-y ${className}`}
       onTouchStart={(e) => {
         touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         swiped.current = false;
@@ -106,10 +106,10 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
                 </span>
               </>
             ) : (
-              // Placeholder: tinted glass (the colour at 30%) with the caption in the middle
+              // Placeholder: a solid block of colour with the caption in the middle
               <div
                 className="w-full h-full flex items-center justify-center px-14 py-6 text-center text-2xl sm:text-3xl font-black tracking-tight text-white/90"
-                style={{ background: `${slide.color}4d` }}
+                style={{ background: slide.color }}
               >
                 {slide.caption}
               </div>
