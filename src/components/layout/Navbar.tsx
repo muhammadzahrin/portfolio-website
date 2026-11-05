@@ -38,7 +38,8 @@ export function Navbar() {
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 flex items-center justify-center text-white shadow-sm shadow-sky-500/40">
             <SparklesIcon className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-sky-400 transition-colors duration-75 ease-out">
+          {/* On Home the big title already says it; still read out to screen readers there */}
+          <span className={pathname === '/' ? 'sr-only' : 'font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-sky-400 transition-colors duration-75 ease-out'}>
             {siteConfig.name}
           </span>
         </Link>

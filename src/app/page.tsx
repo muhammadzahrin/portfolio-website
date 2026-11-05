@@ -15,47 +15,58 @@ const meSlides = memoriesData
   .filter((m) => m.category === 'event' || m.category === 'education')
   .map((m, i) => ({ id: m._id, caption: m.title, image: m.photos?.[0], color: PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length] }));
 
+/** Logo for a bubble, or the name's initials until there is one */
+function BubbleLogo({ name, logo }: { name: string; logo?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  if (logo) return <img src={logo} alt="" className="w-9 h-9 object-contain" />;
+  return <>{name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</>;
+}
+
 export default function HomePage() {
   const job = workExperiences.find((w) => w.isCurrent);
+  const uni = memoriesData.find((m) => m.category === 'education');
 
   return (
     // Same width and top padding as the other pages
-    <div className="home max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-4 flex flex-col gap-6 md:gap-10">
-      {/* Title screen: my name in the middle with a splash line, a bubble either side
-          (at the edges on phones, beside the name on desktop) */}
-      <section className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-2 md:gap-x-20">
-        <div className="justify-self-start md:justify-self-end">
+    <div className="home max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-4 flex flex-col gap-6 md:gap-8">
+      {/* Title screen: my name, a subtitle, then a row of bubbles like a menu */}
+      <section className="flex flex-col items-center text-center">
+        <h1 className="text-5xl sm:text-7xl md:text-8xl leading-[1.1]">
+          <span data-intro-target className="intro-name">
+            {siteConfig.name}
+          </span>
+        </h1>
+        <p className="mt-1 text-base sm:text-lg text-slate-300">{siteConfig.tagline}</p>
+
+        <div className="bubble-row mt-4 md:mt-6 flex justify-center gap-3 sm:gap-10">
           {job && (
             <Bubble
               href="/experience"
               id="ring-job"
               label={`Currently ${job.role} at ${job.organisation}`}
-              ringText={`Currently at ${job.organisation}`}
+              ringText={job.organisation}
+              ringBottom={job.role}
               iconClassName="bubble-spin text-sm font-bold text-white"
             >
-              {job.logo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={job.logo} alt="" className="w-9 h-9 object-contain" />
-              ) : (
-                job.organisation.split(' ').map((w) => w[0]).join('').slice(0, 2)
-              )}
+              <BubbleLogo name={job.organisation} logo={job.logo} />
             </Bubble>
           )}
-        </div>
-
-        <div className="relative">
-          <h1 className="text-5xl sm:text-7xl md:text-8xl leading-[1.1]">
-            <span data-intro-target className="intro-name">
-              {siteConfig.name}
-            </span>
-          </h1>
-          <p className="splash">{siteConfig.tagline}</p>
-        </div>
-
-        <div className="justify-self-end md:justify-self-start">
           <Bubble href="/contact" id="ring-contact" label="Get in touch" ringText="Get in touch" iconClassName="bubble-wave text-white">
             <HandWaveIcon />
           </Bubble>
+          {uni && (
+            <Bubble
+              href="/about"
+              id="ring-uni"
+              label={`Studying ${uni.subtitle} at ${uni.title}`}
+              ringText={uni.title}
+              // The full name runs up both sides of the ring
+              ringBottom="Diploma in IT"
+              iconClassName="bubble-spin text-sm font-bold text-white"
+            >
+              <BubbleLogo name={uni.title} />
+            </Bubble>
+          )}
         </div>
       </section>
 

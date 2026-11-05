@@ -8,7 +8,7 @@ export const workExperiences: WorkExperience[] = [
   {
     _id: 'exp-sd-guthrie-berhad',
     _type: 'workExperience',
-    role: 'IT Intern',
+    role: 'Software Engineering Intern',
     organisation: 'SD Guthrie Berhad',
     location: 'Malaysia',
     startDate: '2024',

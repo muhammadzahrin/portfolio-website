@@ -45,7 +45,7 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-slate-950 ${className}`}
+      className={`group relative rounded-2xl aero-panel ${className}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -53,24 +53,28 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
         <div
           key={slide.id}
           aria-hidden="true"
-          className={`absolute inset-0 transition-opacity duration-700 ${i === shown ? 'opacity-100' : 'opacity-0'}`}
+          // Inset inside the glass frame
+          className={`absolute inset-1.5 rounded-xl overflow-hidden transition-opacity duration-700 ${i === shown ? 'opacity-100' : 'opacity-0'}`}
         >
           {slide.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={slide.image} alt="" className="w-full h-full object-cover" />
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={slide.image} alt="" className="w-full h-full object-cover" />
+              {/* Inside the slide so it fades with its picture; a shadow behind the letters keeps it readable on any photo */}
+              {/* No truncate: its overflow clipping would cut the shadow off at the text box */}
+              <span className="absolute left-3 right-20 bottom-2.5 text-[11px] leading-tight tracking-wide text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_0_8px_rgba(0,0,0,0.7)]">
+                {slide.caption}
+              </span>
+            </>
           ) : (
+            // Placeholder: tinted glass (the colour at 30%) with the caption in the middle
             <div
               className="w-full h-full flex items-center justify-center px-14 py-6 text-center text-2xl sm:text-3xl font-black tracking-tight text-white/90"
-              style={{ background: slide.color }}
+              style={{ background: `${slide.color}4d` }}
             >
               {slide.caption}
             </div>
           )}
-          {/* Inside the slide so it fades with its picture; a shadow behind the letters keeps it readable on any photo */}
-          {/* No truncate: its overflow clipping would cut the shadow off at the text box */}
-          <span className="absolute left-3 right-20 bottom-2.5 text-[11px] leading-tight tracking-wide text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_0_8px_rgba(0,0,0,0.7)]">
-            {slide.caption}
-          </span>
         </div>
       ))}
 
