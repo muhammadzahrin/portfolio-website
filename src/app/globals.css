@@ -543,12 +543,12 @@ html.disable-backdrop-blur .glass-card-surface {
   50% { transform: rotate(10deg); }
 }
 
-/* Boot splash (IntroSplash). Fail-safe: if the script never runs, it hides itself after 7s */
+/* Boot splash (IntroSplash). Fail-safe: if the script never runs, it hides itself after 9s (the sequence takes about 5s) */
 .intro {
   position: fixed;
   inset: 0;
   z-index: 200;
-  animation: intro-failsafe 0s 7s forwards;
+  animation: intro-failsafe 0s 9s forwards;
 }
 
 .intro[hidden] {

@@ -77,17 +77,25 @@ export function IntroSplash() {
       const scale = Math.min(120, Math.max(48, innerWidth * 0.12)) / parseFloat(getComputedStyle(name).fontSize);
       const start = `translate(${innerWidth / 2 - cx}px, ${innerHeight / 2 - cy}px) scale(${scale})`;
       name.style.transform = start;
-      name.style.filter = GLOW;
 
-      await run(name.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, easing: 'ease-out', fill: 'forwards' }));
-      await wait(250);
+      // Comes into focus out of a wide blur, keeping the blue glow behind it, then holds for a second
+      await run(
+        name.animate(
+          [
+            { opacity: 0, filter: `blur(40px) ${GLOW}` },
+            { opacity: 1, filter: `blur(0px) ${GLOW}` },
+          ],
+          { duration: 1500, easing: 'ease-out', fill: 'forwards' },
+        ),
+      );
+      await wait(1000);
       if (cancelled) return;
 
       await run(
         name.animate(
           [
-            { transform: start, filter: GLOW },
-            { transform: 'none', filter: 'drop-shadow(0 0 0 rgba(56, 189, 248, 0))' },
+            { transform: start, filter: `blur(0px) ${GLOW}` },
+            { transform: 'none', filter: 'blur(0px) drop-shadow(0 0 0 rgba(56, 189, 248, 0))' },
           ],
           { duration: 750, easing: 'cubic-bezier(0.6, 0, 0.2, 1)', fill: 'forwards' },
         ),
