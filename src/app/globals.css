@@ -459,7 +459,7 @@ html.disable-backdrop-blur .glass-card-surface {
 }
 
 .bubble-wave {
-  transform-origin: 35% 85%; /* the hand icon's wrist */
+  transform-origin: 45% 92%; /* the base of the hand */
 }
 
 /* Desktop hover: the logo does a quick full turn, then rests facing forward; the hand waves */
@@ -548,10 +548,9 @@ html.disable-backdrop-blur .glass-card-surface {
 .intro-bg {
   position: absolute;
   inset: 0;
-  background: #000;
-  /* Fully black at radius 0; a wide 480px soft edge trails behind the growing hole */
-  -webkit-mask-image: radial-gradient(circle at var(--intro-x, 50%) var(--intro-y, 50%), transparent calc(var(--intro-r) - 480px), #000 var(--intro-r));
-  mask-image: radial-gradient(circle at var(--intro-x, 50%) var(--intro-y, 50%), transparent calc(var(--intro-r) - 480px), #000 var(--intro-r));
+  /* Fully black at radius 0; a wide 480px soft edge trails behind the growing hole.
+     A gradient background, not a mask: one paint per frame instead of a separate mask pass, so the reveal stutters less */
+  background: radial-gradient(circle at var(--intro-x, 50%) var(--intro-y, 50%), transparent calc(var(--intro-r) - 480px), #000 var(--intro-r));
 }
 
 .intro-logo {

@@ -53,9 +53,6 @@ export default function HomePage() {
               <BubbleLogo name={job.organisation} logo={job.logo} />
             </Bubble>
           )}
-          <Bubble href="/contact" id="ring-contact" label="Get in touch" ringText="Get in touch" iconClassName="bubble-wave text-white">
-            <HandWaveIcon />
-          </Bubble>
           {uni && (
             <Bubble
               href="/about"
@@ -69,6 +66,9 @@ export default function HomePage() {
               <BubbleLogo name={uni.title} />
             </Bubble>
           )}
+          <Bubble href="/contact" id="ring-contact" label="Get in touch" ringText="Get in touch" iconClassName="bubble-wave text-white">
+            <HandWaveIcon />
+          </Bubble>
         </div>
       </section>
 

@@ -40,6 +40,8 @@ export function IntroSplash({ name }: { name: string }) {
     const finish = () => {
       if (cancelled) return;
       cancelled = true;
+      // Hide first: cancelling resets the backdrop to solid black, which flashed for a frame before React removed it
+      overlay.hidden = true;
       running.forEach((a) => a.cancel());
       try {
         sessionStorage.setItem(SEEN_KEY, '1');
