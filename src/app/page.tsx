@@ -29,16 +29,18 @@ export default function HomePage() {
   return (
     // Same width and top padding as the other pages
     <div className="home max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-4 flex flex-col gap-6 md:gap-8">
-      {/* Title screen: my name, a subtitle, then a row of bubbles like a menu */}
-      <section className="flex flex-col items-center text-center">
+      {/* Title screen: my name and subtitle, with a row of bubbles like a menu: to the right on desktop, below on phones */}
+      <section className="flex flex-col items-center text-center md:flex-row md:justify-between md:text-left">
+        <div>
         <h1 className="text-5xl sm:text-7xl md:text-8xl leading-[1.1]">
           <span data-intro-target className="intro-name">
             {siteConfig.name}
           </span>
         </h1>
         <p className="mt-1 text-base sm:text-lg text-slate-300">{siteConfig.tagline}</p>
+        </div>
 
-        <div className="bubble-row mt-4 md:mt-6 flex justify-center gap-3 sm:gap-10">
+        <div className="bubble-row mt-4 md:mt-0 flex justify-center gap-3 sm:gap-10 md:gap-6">
           {job && (
             <Bubble
               href="/experience"

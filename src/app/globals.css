@@ -391,14 +391,11 @@ html.disable-backdrop-blur .glass-card-surface {
   width: 100%;
 }
 
-/* 12fr:16fr with 4:3 and 16:9 panels gives both the same height (9 units);
-   the max-width caps that height at the screen height left over after the navbar, title and bubbles (420px) */
+/* 12fr:16fr with 4:3 and 16:9 panels gives both the same height (9 units), filling the page width */
 @media (min-width: 768px) {
   .home-panels {
     grid-template-columns: 12fr 16fr;
     gap: 24px;
-    max-width: calc((100vh - 420px) * 28 / 9 + 24px);
-    margin-inline: auto;
   }
 }
 
@@ -468,7 +465,7 @@ html.disable-backdrop-blur .glass-card-surface {
 /* Desktop hover: the logo does a quick full turn, then rests facing forward; the hand waves */
 @media (hover: hover) {
   .bubble-link:hover .bubble-spin {
-    animation: bubble-spin 1s ease-in-out infinite;
+    animation: bubble-spin 1.5s ease-in-out infinite;
   }
 
   .bubble-link:hover .bubble-wave {
