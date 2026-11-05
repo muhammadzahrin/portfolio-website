@@ -152,7 +152,7 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
               className="group/dot p-1"
             >
               <span
-                className={`block w-1.5 h-1.5 rounded-full shadow-[0_0_3px_rgba(0,0,0,0.8)] ${i === shown ? 'bg-white' : 'bg-white/40 group-hover/dot:bg-white/80'}`}
+                className={`block w-2 h-2 rounded-full shadow-[0_0_3px_rgba(0,0,0,0.8)] ${i === shown ? 'bg-white' : 'bg-white/40 group-hover/dot:bg-white/80'}`}
               />
             </button>
           ))}
