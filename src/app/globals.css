@@ -497,6 +497,26 @@ html.disable-backdrop-blur .glass-card-surface {
   .bubble-row .bubble-link { animation: none; }
 }
 
+/* Thin glassy bar along the bottom of a slideshow picture: starts full and empties towards the right,
+   and the slideshow moves on when it runs out (Slideshow.tsx) */
+.slide-timer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+  transform-origin: right;
+  animation: slide-timer 4s linear forwards;
+}
+
+@keyframes slide-timer {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
 /* Home panels as Frutiger Aero glass: a frosted frame with a glossy top half over the picture */
 .aero-panel {
   background: rgba(186, 230, 253, 0.08);
@@ -528,9 +548,6 @@ html.disable-backdrop-blur .glass-card-surface {
   position: fixed;
   inset: 0;
   z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   animation: intro-failsafe 0s 7s forwards;
 }
 
@@ -553,16 +570,11 @@ html.disable-backdrop-blur .glass-card-surface {
   background: radial-gradient(circle at var(--intro-x, 50%) var(--intro-y, 50%), transparent calc(var(--intro-r) - 480px), #000 var(--intro-r));
 }
 
-.intro-logo {
-  position: relative;
-  font-size: clamp(48px, 12vw, 120px);
-  line-height: 1.1; /* same as the heading, so the scaled logo sits exactly on it */
-  filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.55));
-  opacity: 0;
-}
-
-/* My name in the Home heading and the splash logo: identical styling makes the hand-over seamless */
+/* My name in the Home heading, which the intro animates: inline-block so it can be transformed,
+   positioned so it can be lifted above the black */
 .intro-name {
+  display: inline-block;
+  position: relative;
   font-family: var(--font-emotion-engine), system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: 0;

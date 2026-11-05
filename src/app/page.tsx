@@ -77,7 +77,7 @@ export default function HomePage() {
         <HomeProjects />
       </div>
 
-      <IntroSplash name={siteConfig.name} />
+      <IntroSplash />
     </div>
   );
 }
