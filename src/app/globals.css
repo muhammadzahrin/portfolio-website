@@ -397,7 +397,7 @@ html.disable-backdrop-blur .glass-card-surface {
   .home-panels {
     grid-template-columns: 12fr 16fr;
     gap: 24px;
-    max-width: calc((100vh - 400px) * 28 / 9 + 24px);
+    max-width: calc((100vh - 290px) * 28 / 9 + 24px);
     margin-inline: auto;
   }
 }
@@ -457,7 +457,7 @@ html.disable-backdrop-blur .glass-card-surface {
 }
 
 .bubble-wave {
-  transform-origin: 70% 80%;
+  transform-origin: 35% 85%; /* the hand icon's wrist */
 }
 
 /* Desktop hover: the logo does a quick full turn, then rests facing forward; the hand waves */
@@ -484,7 +484,7 @@ html.disable-backdrop-blur .glass-card-surface {
   50% { transform: rotate(10deg); }
 }
 
-/* Boot splash (IntroSplash). Fail-safe: if the script never runs, it hides itself after 5s */
+/* Boot splash (IntroSplash). Fail-safe: if the script never runs, it hides itself after 7s */
 .intro {
   position: fixed;
   inset: 0;
@@ -492,27 +492,71 @@ html.disable-backdrop-blur .glass-card-surface {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: intro-failsafe 0s 5s forwards;
+  animation: intro-failsafe 0s 7s forwards;
 }
 
 .intro[hidden] {
   display: none;
 }
 
+/* Radius of the hole the page shows through at the end; registered so it can animate */
+@property --intro-r {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 .intro-bg {
   position: absolute;
   inset: 0;
   background: #000;
+  /* Fully black at radius 0; a wide 480px soft edge trails behind the growing hole */
+  -webkit-mask-image: radial-gradient(circle at var(--intro-x, 50%) var(--intro-y, 50%), transparent calc(var(--intro-r) - 480px), #000 var(--intro-r));
+  mask-image: radial-gradient(circle at var(--intro-x, 50%) var(--intro-y, 50%), transparent calc(var(--intro-r) - 480px), #000 var(--intro-r));
 }
 
 .intro-logo {
   position: relative;
+  font-size: clamp(48px, 12vw, 120px);
+  line-height: 1.1; /* same as the heading, so the scaled logo sits exactly on it */
+  filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.55));
+  opacity: 0;
+}
+
+/* My name in the Home heading and the splash logo: identical styling makes the hand-over seamless */
+.intro-name {
   font-family: var(--font-emotion-engine), system-ui, sans-serif;
   font-weight: 700;
-  font-size: clamp(48px, 12vw, 120px);
+  letter-spacing: 0;
   color: #fff;
-  text-shadow: 0 0 28px rgba(56, 189, 248, 0.55);
-  opacity: 0;
+}
+
+/* Tagline as a title-screen splash: yellow, tilted, hanging off the name's lower right, pulsing */
+.splash {
+  position: absolute;
+  left: 60%; /* phones: kept clear of the bubble on the right */
+  top: 92%;
+  translate: -50% -50%;
+  rotate: -14deg;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffff55;
+  text-shadow: 2px 2px 0 #3f3f15;
+  animation: splash-pulse 0.5s ease-in-out infinite alternate;
+}
+
+@media (min-width: 640px) {
+  .splash { font-size: 16px; }
+}
+
+@media (min-width: 768px) {
+  .splash { left: 72%; font-size: 20px; }
+}
+
+@keyframes splash-pulse {
+  from { scale: 1; }
+  to { scale: 1.08; }
 }
 
 @keyframes intro-failsafe {

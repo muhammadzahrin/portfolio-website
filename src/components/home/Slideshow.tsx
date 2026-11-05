@@ -60,14 +60,15 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
             <img src={slide.image} alt="" className="w-full h-full object-cover" />
           ) : (
             <div
-              className="w-full h-full flex items-center justify-center p-6 text-center text-2xl sm:text-3xl font-black tracking-tight text-white/90"
+              className="w-full h-full flex items-center justify-center px-14 py-6 text-center text-2xl sm:text-3xl font-black tracking-tight text-white/90"
               style={{ background: slide.color }}
             >
               {slide.caption}
             </div>
           )}
           {/* Inside the slide so it fades with its picture; a shadow behind the letters keeps it readable on any photo */}
-          <span className="absolute left-3 right-20 bottom-2.5 truncate text-[11px] tracking-wide text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_0_8px_rgba(0,0,0,0.7)]">
+          {/* No truncate: its overflow clipping would cut the shadow off at the text box */}
+          <span className="absolute left-3 right-20 bottom-2.5 text-[11px] leading-tight tracking-wide text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.9),0_0_8px_rgba(0,0,0,0.7)]">
             {slide.caption}
           </span>
         </div>

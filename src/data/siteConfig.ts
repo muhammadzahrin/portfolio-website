@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig = {
   _type: 'siteConfig',
   name: 'Zahrin',
   roleTitle: 'Diploma in Information Technology Student & Software / Game Dev Enthusiast',
-  tagline: 'Software Engineer by day, Game Developer by night.',
+  tagline: 'Making software and games!',
   shortBioIntro:
     'Hi, I’m Zahrin. Currently pursuing my Diploma in Information Technology at UniKL MIIT, interning at SD Guthrie Berhad, and passionate about Malaysian game development.',
   contactEmail: 'zahrin.zamri@example.com', // Placeholder email

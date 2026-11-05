@@ -9,7 +9,8 @@ import { DebugPanel } from '@/components/ui/DebugPanel';
 /**
  * "Emotion Engine" by Neale Davidson / Pixel Sagas (pixelsagas.com).
  * Freeware for personal, non-commercial use; web embedding is permitted.
- * Used for the "Zahrin" label on the project case spines.
+ * Used for the "Zahrin" label on the project case spines, and my name on Home
+ * (preloaded: it's above the fold there and in the intro splash).
  */
 const emotionEngine = localFont({
   src: [
@@ -18,7 +19,7 @@ const emotionEngine = localFont({
   ],
   variable: '--font-emotion-engine',
   display: 'swap',
-  preload: false,
+  preload: true,
 });
 
 export const metadata: Metadata = {

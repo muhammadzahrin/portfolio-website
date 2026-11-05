@@ -8,10 +8,13 @@ const SEEN_KEY = 'intro-seen';
 // returning visitors (this tab) and reduced motion, so the page never flashes black
 const HIDE_EARLY = `try{if(sessionStorage.getItem('${SEEN_KEY}')||matchMedia('(prefers-reduced-motion: reduce)').matches)document.getElementById('intro').hidden=true}catch(e){}`;
 
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 /**
- * Console-style boot splash, once per tab: my name fades in on black, then the
- * black fades away while the name flies into the "Hi, I'm ..." heading
- * (the element marked data-intro-target). Any click or key skips it.
+ * Console-style boot splash, once per tab: my name fades in on black, flies into
+ * its place in the Home title (the element marked data-intro-target,
+ * styled the same via .intro-name so the hand-over is invisible), then the page
+ * opens up around it in a soft-edged circle. Any click or key skips it.
  */
 export function IntroSplash({ name }: { name: string }) {
   const [done, setDone] = useState(false);
@@ -43,39 +46,50 @@ export function IntroSplash({ name }: { name: string }) {
       } catch {}
       setDone(true);
     };
+    const run = (a: Animation) => {
+      running.push(a);
+      return a.finished;
+    };
 
     const play = async () => {
       // Wait (briefly) for the Emotion Engine font so the name doesn't swap fonts mid-fade
-      await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 800))]);
+      await Promise.race([document.fonts.ready, wait(800)]);
       if (cancelled) return;
 
-      const fadeIn = logo.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, easing: 'ease-out', fill: 'forwards' });
-      running.push(fadeIn);
-      await fadeIn.finished;
-      await new Promise((r) => setTimeout(r, 300));
+      await run(logo.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, easing: 'ease-out', fill: 'forwards' }));
+      await wait(250);
       if (cancelled) return;
 
+      // Same font and colour as the heading, so scaling it onto the heading lines the letters up
       const from = logo.getBoundingClientRect();
       const to = target.getBoundingClientRect();
       const scale = to.width / from.width;
       const dx = to.left + to.width / 2 - (from.left + from.width / 2);
       const dy = to.top + to.height / 2 - (from.top + from.height / 2);
-      const timing: KeyframeAnimationOptions = { duration: 800, easing: 'cubic-bezier(0.6, 0, 0.2, 1)', fill: 'forwards' };
-
-      running.push(
-        backdrop.animate([{ opacity: 1 }, { opacity: 0 }], timing),
-        // The two fonts differ, so the name cross-fades into the heading as it lands
+      await run(
         logo.animate(
           [
-            { transform: 'none', opacity: 1 },
-            { opacity: 1, offset: 0.6 },
-            { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0 },
+            { transform: 'none' },
+            { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, filter: 'drop-shadow(0 0 0 rgba(56, 189, 248, 0))' },
           ],
-          timing,
+          { duration: 750, easing: 'cubic-bezier(0.6, 0, 0.2, 1)', fill: 'forwards' },
         ),
-        target.animate([{ opacity: 0 }, { opacity: 0, offset: 0.6 }, { opacity: 1 }], timing),
       );
-      await Promise.all(running.map((a) => a.finished));
+      if (cancelled) return;
+
+      // Open the black outward from the name: a feathered hole that grows past the farthest corner
+      const cx = to.left + to.width / 2;
+      const cy = to.top + to.height / 2;
+      // + the soft edge's width (480px in .intro-bg), so the edge has fully passed the corners
+      const reach = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy)) + 480;
+      backdrop.style.setProperty('--intro-x', `${cx}px`);
+      backdrop.style.setProperty('--intro-y', `${cy}px`);
+      const reveal: KeyframeAnimationOptions = { duration: 900, easing: 'linear', fill: 'forwards' };
+      await Promise.all([
+        run(backdrop.animate([{ '--intro-r': '0px' }, { '--intro-r': `${reach}px` }], reveal)),
+        // Browsers without animatable custom properties still get a fade
+        run(backdrop.animate([{ opacity: 1 }, { opacity: 1, offset: 0.6 }, { opacity: 0 }], reveal)),
+      ]);
       finish();
     };
 
@@ -98,7 +112,7 @@ export function IntroSplash({ name }: { name: string }) {
       {/* suppressHydrationWarning: the inline script may set `hidden` before React hydrates */}
       <div ref={overlayRef} id="intro" className="intro" aria-hidden="true" suppressHydrationWarning>
         <div className="intro-bg" />
-        <span className="intro-logo">{name}</span>
+        <span className="intro-logo intro-name">{name}</span>
       </div>
       <script dangerouslySetInnerHTML={{ __html: HIDE_EARLY }} />
       <noscript>
