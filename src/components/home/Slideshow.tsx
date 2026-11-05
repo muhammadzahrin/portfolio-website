@@ -30,7 +30,10 @@ const SWIPE_PX = 40;
  */
 export function Slideshow({ slides, href, label, className = '', children }: SlideshowProps) {
   const [index, setIndex] = useState(0);
+  // Only while the panel has keyboard focus
   const [paused, setPaused] = useState(false);
+  // Bumped by the dots, so picking the picture already showing still restarts the timer
+  const [picks, setPicks] = useState(0);
   // Reduced motion: no auto-advance or sliding (the global rule would also end the timer bar instantly)
   const [still, setStill] = useState(true);
   const slideEls = useRef<(HTMLDivElement | null)[]>([]);
@@ -58,8 +61,6 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
   return (
     <div
       className={`group relative rounded-2xl aero-panel touch-pan-y ${className}`}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
       onTouchStart={(e) => {
         touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         swiped.current = false;
@@ -116,10 +117,11 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
           </div>
         ))}
 
-        {/* Restarts on every picture (key); paused with the slideshow; moving on when it empties keeps the two in step */}
+        {/* Restarts (key) on every new picture, including a Software/Games switch, and on a dot pick;
+            moving on when it empties keeps the two in step */}
         {!still && slides.length > 1 && (
           <span
-            key={shown}
+            key={`${current?.id}-${picks}`}
             className="slide-timer"
             style={{ animationPlayState: paused ? 'paused' : 'running' }}
             onAnimationEnd={() => go(shown + 1, 1)}
@@ -143,7 +145,10 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
               type="button"
               aria-label={`Show ${slide.caption}`}
               aria-current={i === shown}
-              onClick={() => go(i, i > shown ? 1 : -1)}
+              onClick={() => {
+                go(i, i > shown ? 1 : -1);
+                setPicks((p) => p + 1);
+              }}
               className="group/dot p-1"
             >
               <span
