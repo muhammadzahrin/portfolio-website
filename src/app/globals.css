@@ -991,8 +991,6 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   --slot: 34px;
   /* Reach of the selected tile's glow */
   --glow: 14px;
-  /* Screen height minus the nav bar (h-11 plus its 1px border) */
-  height: calc(100dvh - 2.75rem - 1px);
 }
 
 @media (min-width: 640px) {
@@ -1000,10 +998,14 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
     --tile: 88px;
     --gap: 28px;
     --slot: 48px;
+    /* Screen height minus the nav bar (h-11 plus its 1px border); phones scroll the page instead */
+    height: calc(100dvh - 2.75rem - 1px);
   }
 }
 
 .xmb-column {
+  height: 100%;
+  overflow-y: auto;
   /* Room for the selected tile's 1.2x scale, plus its glow: a scroller clips sideways too.
      The negative margin keeps the tiles where they were and lets the glow use the page gutter. */
   width: calc(var(--tile) * 1.2 + 4px + 2 * var(--glow));
@@ -1076,6 +1078,46 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 .xmb-details {
   /* Level with the top of the grown selected tile */
   padding-top: calc(var(--slot) - var(--tile) * 0.1);
+}
+
+/* Phones: the column turns into a sideways row stuck under the nav bar, so the details get the
+   full width and the page scrolls normally. The tile scrolled past peeks in from the left edge. */
+@media (max-width: 639px) {
+  .xmb-column {
+    position: sticky;
+    top: calc(2.75rem + 1px);
+    z-index: 10;
+    display: flex;
+    width: auto;
+    height: auto;
+    /* Edge to edge, past the page's px-4 gutter */
+    margin-inline: -1rem;
+    padding: var(--glow) 0 var(--glow) var(--slot);
+    scroll-padding-top: 0;
+    scroll-padding-left: var(--slot);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    background: rgba(4, 6, 10, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(125, 211, 252, 0.15);
+  }
+
+  .xmb-item {
+    flex-shrink: 0;
+    margin: 0 var(--gap) 0 0;
+  }
+
+  .xmb-end {
+    flex-shrink: 0;
+    width: calc(100% - var(--tile) - var(--gap));
+    height: auto;
+  }
+
+  .xmb-details {
+    padding-top: 1rem;
+  }
 }
 
 /* The selected name glows in and out */
