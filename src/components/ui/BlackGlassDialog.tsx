@@ -5,6 +5,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 interface BlackGlassDialogProps {
   label: string;
   onClose: () => void;
+  /** Phones: centre the contents on the whole screen instead of leaving room under the X */
+  centered?: boolean;
   /** Layout of the panel's contents */
   className?: string;
   children: React.ReactNode;
@@ -15,7 +17,7 @@ interface BlackGlassDialogProps {
  * closes it; on phones the panel fills the screen and has an X. Esc and the
  * browser/phone back button close it too.
  */
-export function BlackGlassDialog({ label, onClose, className = '', children }: BlackGlassDialogProps) {
+export function BlackGlassDialog({ label, onClose, centered = false, className = '', children }: BlackGlassDialogProps) {
   const [isWide] = useState(() => window.matchMedia('(min-width: 768px)').matches);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const pushedHistory = useRef(false);
@@ -72,7 +74,7 @@ export function BlackGlassDialog({ label, onClose, className = '', children }: B
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      className="fixed inset-0 z-[100] overflow-hidden flex items-center justify-center p-4 max-md:pt-[68px] outline-none"
+      className={`fixed inset-0 z-[100] overflow-hidden flex items-center justify-center p-4 outline-none ${centered ? '' : 'max-md:pt-[68px]'}`}
       onClick={(e) => {
         // Phones: the panel fills the screen, so only the X closes it
         // (the Close button handles itself: closing twice would go back two pages)

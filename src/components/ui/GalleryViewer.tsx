@@ -13,8 +13,9 @@ interface GalleryViewerProps {
 }
 
 function Picture({ slide, small = false }: { slide: Slide; small?: boolean }) {
+  // Big picture: the whole photo, whatever its shape (bars fill the rest); thumbnails crop to fill
   // eslint-disable-next-line @next/next/no-img-element
-  if (slide.image) return <img src={slide.image} alt="" className="w-full h-full object-cover" />;
+  if (slide.image) return <img src={slide.image} alt="" className={`w-full h-full ${small ? 'object-cover' : 'object-contain'}`} />;
   // Placeholder: a solid block of colour with the caption in the middle
   return (
     <div
@@ -26,8 +27,9 @@ function Picture({ slide, small = false }: { slide: Slide; small?: boolean }) {
   );
 }
 
+// The whole height is clickable, but it only darkens while pressed, so it never sits over the photo
 const ARROW =
-  'absolute inset-y-0 w-12 sm:w-14 flex items-center justify-center text-white/80 hover:text-white hover:bg-black/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 transition-colors';
+  'absolute inset-y-0 w-10 sm:w-12 flex items-center justify-center text-white/80 hover:text-white active:bg-black/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400';
 
 /**
  * Black glass picture viewer: a big picture with previous/next strips down each side (the whole
@@ -73,9 +75,10 @@ export function GalleryViewer({ slides, start, label, onClose }: GalleryViewerPr
   if (!current) return null;
 
   return (
-    <BlackGlassDialog label={label} onClose={onClose}>
-      <div className="w-[min(92vw,960px)]">
-        <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
+    <BlackGlassDialog label={label} onClose={onClose} centered>
+      {/* 4:3 frame (most photos are 4:3), narrowed on short screens so it and the thumbnails fit */}
+      <div className="w-[min(92vw,960px,calc((100dvh_-_13rem)*4/3))]">
+        <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-black">
           <Picture slide={current} />
           {/* Same caption style as the slideshows; a shadow behind the letters keeps it readable on any photo */}
           {current.image && (
@@ -86,12 +89,12 @@ export function GalleryViewer({ slides, start, label, onClose }: GalleryViewerPr
           {slides.length > 1 && (
             <>
               <button type="button" aria-label="Previous picture" onClick={() => go(index - 1)} className={`${ARROW} left-0`}>
-                <svg viewBox="0 0 24 24" className="w-8 h-8 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M15 5l-7 7 7 7" />
                 </svg>
               </button>
               <button type="button" aria-label="Next picture" onClick={() => go(index + 1)} className={`${ARROW} right-0`}>
-                <svg viewBox="0 0 24 24" className="w-8 h-8 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M9 5l7 7-7 7" />
                 </svg>
               </button>
@@ -110,7 +113,7 @@ export function GalleryViewer({ slides, start, label, onClose }: GalleryViewerPr
               aria-label={`Show ${slide.caption}`}
               aria-current={i === index}
               onClick={() => setIndex(i)}
-              className={`shrink-0 w-28 sm:w-36 aspect-video rounded overflow-hidden border-2 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${i === index ? 'border-white' : 'border-transparent opacity-60 hover:opacity-100'}`}
+              className={`shrink-0 w-24 sm:w-32 aspect-[4/3] rounded overflow-hidden border-2 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${i === index ? 'border-white' : 'border-transparent opacity-60 hover:opacity-100'}`}
             >
               <Picture slide={slide} small />
             </button>

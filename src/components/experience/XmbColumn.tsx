@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { WorkExperience } from '@/data/types';
 import { Slideshow } from '@/components/home/Slideshow';
 import { GalleryViewer } from '@/components/ui/GalleryViewer';
+import { BlackGlassDialog } from '@/components/ui/BlackGlassDialog';
 
 const PLACEHOLDER_COLORS = ['#2f7fd6', '#2a9d8f', '#8e5bd6', '#d6862f'];
 
@@ -71,6 +72,20 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
 
   // The gallery picture opened in the big viewer
   const [viewing, setViewing] = useState<number | null>(null);
+  // Text cut off because the screen is too short, and whether it's open in full
+  const [clipped, setClipped] = useState(false);
+  const [reading, setReading] = useState(false);
+  const textRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const text = textRef.current;
+    if (!text) return;
+    const check = () => setClipped(text.scrollHeight > text.clientHeight + 1);
+    check();
+    const observer = new ResizeObserver(check);
+    observer.observe(text);
+    return () => observer.disconnect();
+  }, [active]);
 
   const current = items[active];
   if (!current) return null;
@@ -123,25 +138,34 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
         </ul>
 
         {/* Keyed: the details fade in fresh for each pick. The panel ends below its last line;
-            it only scrolls inside if a small screen can't fit the text. */}
+            on a screen too short for the text, the text is cut off with a Read more. */}
         <div key={current._id} className="xmb-details xmb-fade flex-1 min-w-0 flex flex-col pl-1 sm:pl-2 pb-4">
-          <div className="min-h-0 overflow-y-auto rounded-2xl glass-surface border border-sky-400/20 p-4 sm:p-6">
-            <h2 className="xmb-title text-lg sm:text-2xl font-bold leading-tight text-white">{current.role}</h2>
-            <p className="mt-1 text-sm sm:text-lg text-slate-200">{current.organisation}</p>
-            <p className="mt-2 text-xs sm:text-sm uppercase tracking-[0.12em] text-slate-400">
-              {dateRange(current.startDate, current.endDate)}
-              <span className="xmb-tag ml-2 align-[1px] tracking-[0.04em]">
-                {current.kind === 'work' ? 'Work' : 'Leadership'}
-              </span>
-            </p>
+          <div className="min-h-0 flex flex-col overflow-hidden rounded-2xl glass-surface border border-sky-400/20 p-4 sm:p-6">
+            <Heading item={current} pulse />
             {slides.length > 0 && (
-              <Slideshow slides={slides} label={`${current.organisation} photos`} onOpen={setViewing} className="mt-4 aspect-[2/1]" />
+              <Slideshow
+                slides={slides}
+                label={`${current.organisation} photos`}
+                onOpen={setViewing}
+                className="mt-4 shrink-0 aspect-[2/1]"
+              />
             )}
-            <div className="mt-4 space-y-3 text-sm sm:text-base leading-relaxed text-slate-300">
-              {current.bullets.map((bullet, i) => (
-                <p key={i}>{withLinks(bullet)}</p>
-              ))}
+            <div
+              ref={textRef}
+              className={`mt-4 min-h-0 overflow-hidden ${clipped ? '[mask-image:linear-gradient(to_bottom,black_70%,transparent)]' : ''}`}
+            >
+              <Paragraphs item={current} />
             </div>
+            {clipped && (
+              <button
+                type="button"
+                onClick={() => setReading(true)}
+                // Right side: the Perf Debug pill sits over the bottom-left corner
+                className="mt-2 self-end text-sm font-semibold text-sky-300 underline underline-offset-2 hover:text-white"
+              >
+                Read more
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -149,6 +173,60 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
       {viewing !== null && (
         <GalleryViewer slides={slides} start={viewing} label={`${current.organisation} photos`} onClose={() => setViewing(null)} />
       )}
+      {reading && <FullText item={current} onClose={() => setReading(false)} />}
     </div>
+  );
+}
+
+function Heading({ item, pulse = false }: { item: WorkExperience; pulse?: boolean }) {
+  return (
+    <>
+      <h2 className={`${pulse ? 'xmb-title ' : ''}text-lg sm:text-2xl font-bold leading-tight text-white`}>{item.role}</h2>
+      <p className="mt-1 text-sm sm:text-lg text-slate-200">{item.organisation}</p>
+      <p className="mt-2 text-xs sm:text-sm uppercase tracking-[0.12em] text-slate-400">
+        {dateRange(item.startDate, item.endDate)}
+        <span className="xmb-tag ml-2 align-[1px] tracking-[0.04em]">{item.kind === 'work' ? 'Work' : 'Leadership'}</span>
+      </p>
+    </>
+  );
+}
+
+function Paragraphs({ item }: { item: WorkExperience }) {
+  return (
+    <div className="space-y-3 text-sm sm:text-base leading-relaxed text-slate-300">
+      {item.bullets.map((bullet, i) => (
+        <p key={i}>{withLinks(bullet)}</p>
+      ))}
+    </div>
+  );
+}
+
+/** The whole entry on the black glass, for screens too short to show it in the panel */
+function FullText({ item, onClose }: { item: WorkExperience; onClose: () => void }) {
+  const boxRef = useRef<HTMLDivElement | null>(null);
+
+  // Scrolling must not move the page behind (it would switch entries), except inside the text if it's long
+  useEffect(() => {
+    const block = (e: Event) => {
+      const box = boxRef.current;
+      if (!(box?.contains(e.target as Node) && box.scrollHeight > box.clientHeight)) e.preventDefault();
+    };
+    window.addEventListener('wheel', block, { passive: false });
+    window.addEventListener('touchmove', block, { passive: false });
+    return () => {
+      window.removeEventListener('wheel', block);
+      window.removeEventListener('touchmove', block);
+    };
+  }, []);
+
+  return (
+    <BlackGlassDialog label={item.role} onClose={onClose} centered>
+      <div ref={boxRef} className="w-[min(88vw,36rem)] max-h-[75dvh] overflow-y-auto overscroll-contain">
+        <Heading item={item} />
+        <div className="mt-4">
+          <Paragraphs item={item} />
+        </div>
+      </div>
+    </BlackGlassDialog>
   );
 }
