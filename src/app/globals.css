@@ -987,8 +987,8 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   /* Tile size, space between tiles, and where the selected tile sits below the nav bar.
      The slot minus the gap is how much of the tile above peeks out. */
   --tile: 56px;
-  --gap: 14px;
-  --slot: 28px;
+  --gap: 20px;
+  --slot: 34px;
   /* Screen height minus the nav bar (h-11 plus its 1px border) */
   height: calc(100dvh - 2.75rem - 1px);
 }
@@ -996,8 +996,8 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 @media (min-width: 640px) {
   .xmb {
     --tile: 88px;
-    --gap: 20px;
-    --slot: 40px;
+    --gap: 28px;
+    --slot: 48px;
   }
 }
 
@@ -1016,6 +1016,8 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 }
 
 .xmb-item {
+  display: flex;
+  justify-content: center;
   margin-bottom: var(--gap);
   scroll-snap-align: start;
 }
@@ -1037,7 +1039,8 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   font-weight: 700;
   font-size: calc(var(--tile) * 0.3);
   opacity: 0.55;
-  transform-origin: top left;
+  /* Grows evenly on all sides, so the gaps above and below stay equal */
+  transform-origin: center;
   transition: transform 200ms ease-out, opacity 200ms ease-out, box-shadow 200ms ease-out;
 }
 
@@ -1049,7 +1052,8 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 }
 
 .xmb-details {
-  padding-top: var(--slot);
+  /* Level with the top of the grown selected tile */
+  padding-top: calc(var(--slot) - var(--tile) * 0.1);
 }
 
 /* The selected name glows in and out */
