@@ -982,5 +982,108 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   border-bottom-width: 0;
 }
 
+/* ===== Experience: console-style menu column ===== */
+.xmb {
+  /* Tile size, space between tiles, and where the selected tile sits below the nav bar.
+     The slot minus the gap is how much of the tile above peeks out. */
+  --tile: 56px;
+  --gap: 14px;
+  --slot: 28px;
+  /* Screen height minus the nav bar (h-11 plus its 1px border) */
+  height: calc(100dvh - 2.75rem - 1px);
+}
+
+@media (min-width: 640px) {
+  .xmb {
+    --tile: 88px;
+    --gap: 20px;
+    --slot: 40px;
+  }
+}
+
+.xmb-column {
+  /* Room for the selected tile's 1.2x scale */
+  width: calc(var(--tile) * 1.2 + 4px);
+  padding-top: var(--slot);
+  scroll-padding-top: var(--slot);
+  /* A short flick snaps to the next tile, a long one carries on past several */
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+
+.xmb-column::-webkit-scrollbar {
+  display: none;
+}
+
+.xmb-item {
+  margin-bottom: var(--gap);
+  scroll-snap-align: start;
+}
+
+.xmb-end {
+  height: calc(100% - var(--slot) - var(--tile));
+}
+
+.xmb-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tile);
+  height: var(--tile);
+  border-radius: 8px;
+  border: 1px solid rgba(125, 211, 252, 0.25);
+  background: linear-gradient(145deg, rgba(56, 140, 220, 0.45), rgba(8, 14, 28, 0.9));
+  color: #fff;
+  font-weight: 700;
+  font-size: calc(var(--tile) * 0.3);
+  opacity: 0.55;
+  transform-origin: top left;
+  transition: transform 200ms ease-out, opacity 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.xmb-tile[aria-current='true'] {
+  opacity: 1;
+  transform: scale(1.2);
+  border-color: rgba(186, 230, 253, 0.8);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+}
+
+.xmb-details {
+  padding-top: var(--slot);
+}
+
+/* The selected name glows in and out */
+@keyframes xmb-pulse {
+  0%,
+  100% {
+    text-shadow: 0 0 4px rgba(125, 211, 252, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(125, 211, 252, 0.9), 0 0 22px rgba(56, 189, 248, 0.55);
+  }
+}
+
+.xmb-title {
+  animation: xmb-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes xmb-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.xmb-fade {
+  animation: xmb-fade 200ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xmb-title {
+    animation: none;
+    text-shadow: 0 0 10px rgba(125, 211, 252, 0.7);
+  }
+}
+
+
 
 

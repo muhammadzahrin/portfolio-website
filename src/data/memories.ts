@@ -55,8 +55,8 @@ export const memoriesData: Memory[] = [
     _id: 'memory-performing-arts-club',
     _type: 'memory',
     title: 'Founding the Performing Arts Club',
-    subtitle: '2023 - 2024',
-    date: '2023',
+    subtitle: '2026',
+    date: '2026',
     category: 'event',
     facts: [
       { label: 'Event', value: 'UniKL MIIT Performing Arts Club Establishment & Campus Productions' },

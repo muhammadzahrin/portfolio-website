@@ -31,19 +31,19 @@ export interface SiteConfig {
 export interface WorkExperience {
   _id: string;
   _type: 'workExperience';
+  kind: 'work' | 'leadership';
   role: string;
   organisation: string;
   location: string;
+  /** 'YYYY-MM', or 'YYYY' when the month isn't known */
   startDate: string;
-  endDate: string;
+  /** Same format; leave out while it's ongoing (shown as "Present") */
+  endDate?: string;
   isCurrent: boolean;
-  /** Company logo for the Home page's "Currently" bubble (square, transparent). Without one, initials are shown. */
+  /** Square logo for the Home bubble and the Experience column (transparent). Without one, initials are shown. */
   logo?: string;
+  /** Write [text](/projects?open=proj-id) to link a project */
   bullets: string[];
-  /**
-   * TODO: confirm with supervisor before publishing.
-   */
-  supervisorApprovalNote: string;
 }
 
 export interface Project {

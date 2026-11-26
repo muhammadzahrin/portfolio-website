@@ -91,6 +91,15 @@ export function ProjectShelf({ projects }: ProjectShelfProps) {
 
   useEffect(() => () => window.clearTimeout(openTimer.current), []);
 
+  // Links from other pages open a case straight away: /projects?open=proj-id
+  useEffect(() => {
+    const project = projects.find((p) => p._id === new URLSearchParams(window.location.search).get('open'));
+    if (!project) return;
+    setOpenProject(project);
+    // So a refresh doesn't open it again
+    window.history.replaceState(null, '', window.location.pathname);
+  }, [projects]);
+
   const visible = filter === 'all' ? projects : projects.filter((p) => p.kind === filter);
 
   const handleActivate = useCallback(

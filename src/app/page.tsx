@@ -23,7 +23,7 @@ function BubbleLogo({ name, logo }: { name: string; logo?: string }) {
 }
 
 export default function HomePage() {
-  const job = workExperiences.find((w) => w.isCurrent);
+  const job = workExperiences.find((w) => w.isCurrent && w.kind === 'work');
   const uni = memoriesData.find((m) => m.category === 'education');
 
   return (
