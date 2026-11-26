@@ -991,8 +991,11 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   --slot: 36px;
   /* Reach of the selected tile's glow */
   --glow: 14px;
-  /* Screen height minus the nav bar (h-11 plus its 1px border) */
-  height: calc(100dvh - 2.75rem - 1px);
+  /* The nav bar's height (h-11 plus its 1px border), the menu's height below it, and how far
+     the page scrolls per entry (svh, so it doesn't jump when a phone's address bar hides) */
+  --nav: calc(2.75rem + 1px);
+  --stage: calc(100dvh - var(--nav));
+  --step: 50svh;
 }
 
 @media (min-width: 640px) {
@@ -1003,43 +1006,60 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   }
 }
 
+/* Page scroll drives the menu: it snaps to one stop per entry, and to the bottom for the footer */
+html:has(.xmb-track) {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: calc(2.75rem + 1px);
+}
+
+html:has(.xmb-track) footer {
+  scroll-snap-align: end;
+}
+
+/* Tall enough for the pinned menu to travel one step per entry after the first */
+.xmb-track {
+  position: relative;
+  height: calc(var(--stage) + (var(--count) - 1) * var(--step));
+}
+
+.xmb-stop {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  scroll-snap-align: start;
+}
+
+.xmb-stage {
+  position: sticky;
+  top: var(--nav);
+  height: var(--stage);
+}
+
 .xmb-column {
-  /* Room for the selected tile's 2x scale, plus its glow: a scroller clips sideways too.
+  /* Room for the selected tile's 2x scale, plus its glow.
      The negative margin keeps the tiles where they were and lets the glow use the page gutter. */
   width: calc(var(--tile) * 2 + 2 * var(--glow));
   padding-inline: var(--glow);
   margin-left: calc(-1 * var(--glow));
   padding-top: var(--slot);
-  scroll-padding-top: var(--slot);
-  /* A short flick snaps to the next tile, a long one carries on past several */
-  scroll-snap-type: y mandatory;
-  scrollbar-width: none;
-}
-
-.xmb-column::-webkit-scrollbar {
-  display: none;
+  /* Moved up one tile per entry; tiles moved past the slot slide under the nav bar */
+  transition: transform 200ms ease-out;
 }
 
 .xmb-item {
   display: flex;
   justify-content: center;
   margin-bottom: var(--gap);
-  scroll-snap-align: start;
 }
 
-/* Tiles either side move half a tile away to make room for the doubled selected one. On the tile,
-   not the item: the item is the snap target, and moving it would move the snap point. */
+/* Tiles either side move half a tile away to make room for the doubled selected one */
 .xmb-above .xmb-tile {
   transform: translateY(calc(var(--tile) * -0.5));
 }
 
 .xmb-below .xmb-tile {
   transform: translateY(calc(var(--tile) * 0.5));
-}
-
-/* Just enough room below the last tile for it to reach the slot */
-.xmb-end {
-  height: calc(100% - var(--tile) - var(--gap));
 }
 
 .xmb-tile {
