@@ -3,6 +3,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { WorkExperience } from '@/data/types';
+import { Slideshow } from '@/components/home/Slideshow';
+import { GalleryViewer } from '@/components/ui/GalleryViewer';
+
+const PLACEHOLDER_COLORS = ['#2f7fd6', '#2a9d8f', '#8e5bd6', '#d6862f'];
 
 // 'YYYY-MM' → 'MM/YYYY'; a bare year stays as it is
 const formatDate = (d: string) => {
@@ -65,8 +69,18 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
     };
   }, [items.length]);
 
+  // The gallery picture opened in the big viewer
+  const [viewing, setViewing] = useState<number | null>(null);
+
   const current = items[active];
   if (!current) return null;
+
+  const slides = (current.gallery ?? []).map((g, i) => ({
+    id: `${current._id}-${i}`,
+    caption: g.caption,
+    image: g.image,
+    color: PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length],
+  }));
 
   return (
     <div className="xmb-track" style={{ '--count': items.length } as React.CSSProperties}>
@@ -120,6 +134,9 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
                 {current.kind === 'work' ? 'Work' : 'Leadership'}
               </span>
             </p>
+            {slides.length > 0 && (
+              <Slideshow slides={slides} label={`${current.organisation} photos`} onOpen={setViewing} className="mt-4 aspect-[2/1]" />
+            )}
             <div className="mt-4 space-y-3 text-sm sm:text-base leading-relaxed text-slate-300">
               {current.bullets.map((bullet, i) => (
                 <p key={i}>{withLinks(bullet)}</p>
@@ -128,6 +145,10 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
           </div>
         </div>
       </div>
+
+      {viewing !== null && (
+        <GalleryViewer slides={slides} start={viewing} label={`${current.organisation} photos`} onClose={() => setViewing(null)} />
+      )}
     </div>
   );
 }

@@ -44,6 +44,8 @@ export interface WorkExperience {
   logo?: string;
   /** Write [text](/projects?open=proj-id) to link a project */
   bullets: string[];
+  /** Photos for the gallery under the dates; without an image a coloured placeholder with the caption shows */
+  gallery?: { caption: string; image?: string }[];
 }
 
 export interface Project {

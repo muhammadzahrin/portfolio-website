@@ -14,7 +14,9 @@ export interface Slide {
 interface SlideshowProps {
   slides: Slide[];
   /** Where clicking the panel goes */
-  href: string;
+  href?: string;
+  /** Instead of a link: called with the picture showing when the panel is clicked */
+  onOpen?: (index: number) => void;
   label: string;
   className?: string;
   /** Controls drawn over the panel's top-right corner (kept clickable above the link) */
@@ -25,10 +27,10 @@ const MOVE: KeyframeAnimationOptions = { duration: 600, easing: 'ease-in-out' };
 const SWIPE_PX = 40;
 
 /**
- * Panel that slides through pictures; the whole panel is a link. A timer bar along the bottom
+ * Panel that slides through pictures; the whole panel is a link (or opens a viewer). A timer bar along the bottom
  * empties, then the next picture slides in. Dots pick a picture; on phones you can swipe.
  */
-export function Slideshow({ slides, href, label, className = '', children }: SlideshowProps) {
+export function Slideshow({ slides, href, onOpen, label, className = '', children }: SlideshowProps) {
   const [index, setIndex] = useState(0);
   // Only while the panel has keyboard focus
   const [paused, setPaused] = useState(false);
@@ -129,13 +131,24 @@ export function Slideshow({ slides, href, label, className = '', children }: Sli
         )}
       </div>
 
-      <Link
-        href={href}
-        aria-label={`${label}: ${current?.caption ?? ''}`}
-        className="absolute inset-0 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
-      />
+      {href ? (
+        <Link
+          href={href}
+          aria-label={`${label}: ${current?.caption ?? ''}`}
+          className="absolute inset-0 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+        />
+      ) : (
+        <button
+          type="button"
+          aria-label={`${label}: ${current?.caption ?? ''}`}
+          className="absolute inset-0 rounded-2xl cursor-zoom-in focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+          onClick={() => onOpen?.(shown)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+        />
+      )}
 
       {slides.length > 1 && (
         <span className="absolute right-2 bottom-2.5 z-10 flex">

@@ -984,11 +984,14 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 
 /* ===== Experience: console-style menu column ===== */
 .xmb {
-  /* Unselected tile size (the selected one is twice that), space between tiles, and where the
-     selected tile sits below the nav bar: half a tile + gap + how much of the tile above peeks out. */
-  --tile: 28px;
+  /* Unselected tile size, how much bigger the selected one is, space between tiles, and where the
+     selected tile sits below the nav bar: its growth on one side + gap + how much of the tile
+     above peeks out. */
+  --tile: 34px;
+  --scale: 1.6;
+  --grow: calc(var(--tile) * (var(--scale) - 1) / 2);
   --gap: 12px;
-  --slot: 36px;
+  --slot: calc(var(--grow) + var(--gap) + 10px);
   /* Reach of the selected tile's glow */
   --glow: 14px;
   /* The nav bar's height (h-11 plus its 1px border), the menu's height below it, and how far
@@ -1000,9 +1003,9 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 
 @media (min-width: 640px) {
   .xmb {
-    --tile: 40px;
+    --tile: 56px;
     --gap: 16px;
-    --slot: 50px;
+    --slot: calc(var(--grow) + var(--gap) + 14px);
   }
 }
 
@@ -1037,9 +1040,9 @@ html:has(.xmb-track) footer {
 }
 
 .xmb-column {
-  /* Room for the selected tile's 2x scale, plus its glow.
+  /* Room for the grown selected tile, plus its glow.
      The negative margin keeps the tiles where they were and lets the glow use the page gutter. */
-  width: calc(var(--tile) * 2 + 2 * var(--glow));
+  width: calc(var(--tile) * var(--scale) + 2 * var(--glow));
   padding-inline: var(--glow);
   margin-left: calc(-1 * var(--glow));
   padding-top: var(--slot);
@@ -1053,13 +1056,13 @@ html:has(.xmb-track) footer {
   margin-bottom: var(--gap);
 }
 
-/* Tiles either side move half a tile away to make room for the doubled selected one */
+/* Tiles either side move away to make room for the grown selected one */
 .xmb-above .xmb-tile {
-  transform: translateY(calc(var(--tile) * -0.5));
+  transform: translateY(calc(-1 * var(--grow)));
 }
 
 .xmb-below .xmb-tile {
-  transform: translateY(calc(var(--tile) * 0.5));
+  transform: translateY(var(--grow));
 }
 
 .xmb-tile {
@@ -1082,11 +1085,11 @@ html:has(.xmb-track) footer {
 
 .xmb-tile[aria-current='true'] {
   opacity: 1;
-  /* Twice the size of the others, like a console menu's selected game */
-  transform: scale(2);
+  /* Bigger than the others, like a console menu's selected game */
+  transform: scale(var(--scale));
   border-color: rgba(186, 230, 253, 0.8);
-  /* Halved: the scale doubles it */
-  box-shadow: 0 0 calc(var(--glow) / 2) rgba(56, 189, 248, 0.45);
+  /* Divided: the scale enlarges it too */
+  box-shadow: 0 0 calc(var(--glow) / var(--scale)) rgba(56, 189, 248, 0.45);
 }
 
 /* Work / Leadership tag: a small silver label like a console's game-type badge */
@@ -1108,7 +1111,7 @@ html:has(.xmb-track) footer {
 
 .xmb-details {
   /* Level with the top of the grown selected tile */
-  padding-top: calc(var(--slot) - var(--tile) * 0.5);
+  padding-top: calc(var(--slot) - var(--grow));
 }
 
 /* The selected name glows in and out */
