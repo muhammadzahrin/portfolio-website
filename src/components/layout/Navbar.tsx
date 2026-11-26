@@ -24,10 +24,8 @@ export function Navbar() {
           <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 flex items-center justify-center text-white shadow-sm shadow-sky-500/40">
             <SparklesIcon className="w-4 h-4 text-white" />
           </div>
-          {/* On Home the big title already says it; still read out to screen readers there */}
-          <span className={pathname === '/' ? 'sr-only' : 'hidden lg:inline font-bold tracking-tight text-white group-hover:text-sky-400 transition-colors duration-75 ease-out'}>
-            {siteConfig.name}
-          </span>
+          {/* Not shown, so the tabs keep their room; still names the link for screen readers */}
+          <span className="sr-only">{siteConfig.name}</span>
         </Link>
 
         <ul className="flex flex-1 items-center justify-around">
