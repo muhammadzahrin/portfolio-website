@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function ExperiencePage() {
   return (
-    // Desktop: fills the screen below the nav bar; only the column and the text box scroll
-    <div className="xmb max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    // Fills the screen below the nav bar; only the column and the text panel scroll
+    <div className="xmb max-w-5xl mx-auto px-3 sm:px-4">
       <h1 className="sr-only">Experience</h1>
       <XmbColumn items={workExperiences} />
     </div>

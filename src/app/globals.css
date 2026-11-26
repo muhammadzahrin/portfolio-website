@@ -984,31 +984,29 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 
 /* ===== Experience: console-style menu column ===== */
 .xmb {
-  /* Tile size, space between tiles, and where the selected tile sits below the nav bar.
-     The slot minus the gap is how much of the tile above peeks out. */
-  --tile: 56px;
-  --gap: 20px;
-  --slot: 34px;
+  /* Unselected tile size (the selected one is twice that), space between tiles, and where the
+     selected tile sits below the nav bar: half a tile + gap + how much of the tile above peeks out. */
+  --tile: 28px;
+  --gap: 12px;
+  --slot: 36px;
   /* Reach of the selected tile's glow */
   --glow: 14px;
+  /* Screen height minus the nav bar (h-11 plus its 1px border) */
+  height: calc(100dvh - 2.75rem - 1px);
 }
 
 @media (min-width: 640px) {
   .xmb {
-    --tile: 88px;
-    --gap: 28px;
-    --slot: 48px;
-    /* Screen height minus the nav bar (h-11 plus its 1px border); phones scroll the page instead */
-    height: calc(100dvh - 2.75rem - 1px);
+    --tile: 40px;
+    --gap: 16px;
+    --slot: 50px;
   }
 }
 
 .xmb-column {
-  height: 100%;
-  overflow-y: auto;
-  /* Room for the selected tile's 1.2x scale, plus its glow: a scroller clips sideways too.
+  /* Room for the selected tile's 2x scale, plus its glow: a scroller clips sideways too.
      The negative margin keeps the tiles where they were and lets the glow use the page gutter. */
-  width: calc(var(--tile) * 1.2 + 4px + 2 * var(--glow));
+  width: calc(var(--tile) * 2 + 2 * var(--glow));
   padding-inline: var(--glow);
   margin-left: calc(-1 * var(--glow));
   padding-top: var(--slot);
@@ -1029,8 +1027,19 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   scroll-snap-align: start;
 }
 
+/* Tiles either side move half a tile away to make room for the doubled selected one. On the tile,
+   not the item: the item is the snap target, and moving it would move the snap point. */
+.xmb-above .xmb-tile {
+  transform: translateY(calc(var(--tile) * -0.5));
+}
+
+.xmb-below .xmb-tile {
+  transform: translateY(calc(var(--tile) * 0.5));
+}
+
+/* Just enough room below the last tile for it to reach the slot */
 .xmb-end {
-  height: calc(100% - var(--slot) - var(--tile));
+  height: calc(100% - var(--tile) - var(--gap));
 }
 
 .xmb-tile {
@@ -1039,7 +1048,7 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   justify-content: center;
   width: var(--tile);
   height: var(--tile);
-  border-radius: 8px;
+  border-radius: 5px;
   border: 1px solid rgba(125, 211, 252, 0.25);
   background: linear-gradient(145deg, rgba(56, 140, 220, 0.45), rgba(8, 14, 28, 0.9));
   color: #fff;
@@ -1053,9 +1062,11 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 
 .xmb-tile[aria-current='true'] {
   opacity: 1;
-  transform: scale(1.2);
+  /* Twice the size of the others, like a console menu's selected game */
+  transform: scale(2);
   border-color: rgba(186, 230, 253, 0.8);
-  box-shadow: 0 0 var(--glow) rgba(56, 189, 248, 0.45);
+  /* Halved: the scale doubles it */
+  box-shadow: 0 0 calc(var(--glow) / 2) rgba(56, 189, 248, 0.45);
 }
 
 /* Work / Leadership tag: a small silver label like a console's game-type badge */
@@ -1077,47 +1088,7 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
 
 .xmb-details {
   /* Level with the top of the grown selected tile */
-  padding-top: calc(var(--slot) - var(--tile) * 0.1);
-}
-
-/* Phones: the column turns into a sideways row stuck under the nav bar, so the details get the
-   full width and the page scrolls normally. The tile scrolled past peeks in from the left edge. */
-@media (max-width: 639px) {
-  .xmb-column {
-    position: sticky;
-    top: calc(2.75rem + 1px);
-    z-index: 10;
-    display: flex;
-    width: auto;
-    height: auto;
-    /* Edge to edge, past the page's px-4 gutter */
-    margin-inline: -1rem;
-    padding: var(--glow) 0 var(--glow) var(--slot);
-    scroll-padding-top: 0;
-    scroll-padding-left: var(--slot);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    background: rgba(4, 6, 10, 0.72);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(125, 211, 252, 0.15);
-  }
-
-  .xmb-item {
-    flex-shrink: 0;
-    margin: 0 var(--gap) 0 0;
-  }
-
-  .xmb-end {
-    flex-shrink: 0;
-    width: calc(100% - var(--tile) - var(--gap));
-    height: auto;
-  }
-
-  .xmb-details {
-    padding-top: 1rem;
-  }
+  padding-top: calc(var(--slot) - var(--tile) * 0.5);
 }
 
 /* The selected name glows in and out */
