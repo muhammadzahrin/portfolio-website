@@ -101,7 +101,7 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
         <p className="mt-0.5 text-sm sm:text-lg text-slate-200">{current.organisation}</p>
         <p className="mt-0.5 text-xs sm:text-sm text-slate-400">
           {dateRange(current.startDate, current.endDate)}
-          <span className="ml-2 px-1.5 py-px rounded border border-sky-400/30 text-[10px] sm:text-xs uppercase tracking-wider text-sky-300">
+          <span className="xmb-tag ml-2 align-[1px]">
             {current.kind === 'work' ? 'Work' : 'Leadership'}
           </span>
         </p>
