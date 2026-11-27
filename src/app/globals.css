@@ -650,6 +650,16 @@ html.disable-backdrop-blur .glass-card-surface {
   }
 }
 
+/* Picture viewer: whole screen on desktop too. Clicks pass through it, so clicking off the picture still closes. */
+.viewer-spotlight.viewer-fill::before {
+  position: fixed;
+  inset: 0;
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+
 .viewer-close {
   animation: viewer-fade-in 300ms ease-out;
 }
@@ -1014,20 +1024,6 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
     --tile: 72px;
     --gap: 20px;
     --slot: calc(var(--grow) + var(--gap) + 16px);
-  }
-}
-
-/* Phones: the slideshow is as wide as the panel */
-.xmb-gallery {
-  flex-shrink: 0;
-}
-
-/* Laptops: the slideshow takes the height the text leaves free (up to 300px) and stays centred, so
-   the text fits without Read more. The huge shrink factor makes it give way before the text does. */
-@media (min-width: 1024px) {
-  .xmb-gallery {
-    flex: 0 1000 300px;
-    min-height: 120px;
   }
 }
 

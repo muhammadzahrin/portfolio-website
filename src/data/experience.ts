@@ -21,8 +21,12 @@ export const workExperiences: WorkExperience[] = [
       'Designing a [workload tracker](/projects?open=proj-workload-tracker) web app for a 5-person software engineering team to plan monthly capacity in mandays (Next.js, Node.js, Azure, Entra ID).',
       'Developing a live [shuttle tracker](/projects?open=proj-shuttle-tracker) for an employee van service used by around 80 staff daily (React Native/Expo, TypeScript, Node.js, Postgres).',
     ],
-    // Placeholder captions until there are real photos
-    gallery: [{ caption: 'MillGPT research' }, { caption: 'Workload tracker' }, { caption: 'Shuttle tracker' }],
+    // Example pictures of mixed shapes (public/examples) until there are real photos
+    gallery: [
+      { caption: 'MillGPT research', image: '/examples/landscape-4x3.svg' },
+      { caption: 'Workload tracker', image: '/examples/landscape-16x9.svg' },
+      { caption: 'Shuttle tracker', image: '/examples/portrait-3x4.svg' },
+    ],
   },
   {
     _id: 'exp-performing-arts-club',
@@ -39,7 +43,11 @@ export const workExperiences: WorkExperience[] = [
       'Coordinated talent logistics and performance schedules for major university events, with crowds ranging from 200 to over 1,900 attendees.',
       'Secured funding and venue approvals from UniKL management through formal proposals, and managed the budget for professional coaching fees.',
     ],
-    gallery: [{ caption: 'Campus performance' }, { caption: 'Executive committee' }, { caption: 'Rehearsals' }],
+    gallery: [
+      { caption: 'Campus performance', image: '/examples/panorama-21x9.svg' },
+      { caption: 'Executive committee', image: '/examples/square-1x1.svg' },
+      { caption: 'Rehearsals', image: '/examples/portrait-9x16.svg' },
+    ],
   },
   {
     _id: 'exp-fishpond-restoration',

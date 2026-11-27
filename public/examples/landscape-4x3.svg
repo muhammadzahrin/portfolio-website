@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4ed8"/><stop offset="1" stop-color="#0f766e"/></linearGradient></defs>
+  <rect width="1200" height="900" fill="url(#g)"/>
+  <g stroke="#fff" stroke-opacity="0.25" stroke-width="4">
+    <line x1="400" y1="0" x2="400" y2="900"/><line x1="800" y1="0" x2="800" y2="900"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="600" x2="1200" y2="600"/>
+  </g>
+  <rect x="12" y="12" width="1176" height="876" fill="none" stroke="#fff" stroke-width="24"/>
+  <g fill="#fff"><circle cx="90" cy="90" r="40"/><circle cx="1110" cy="90" r="40"/><circle cx="90" cy="810" r="40"/><circle cx="1110" cy="810" r="40"/></g>
+  <text x="50%" y="48%" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="110" fill="#fff">4:3 landscape</text>
+  <text x="50%" y="58%" text-anchor="middle" font-family="Arial, sans-serif" font-size="56" fill="#fff" fill-opacity="0.85">1200 × 900 example</text>
+</svg>

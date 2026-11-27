@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="900" viewBox="0 0 2100 900">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0369a1"/><stop offset="1" stop-color="#155e75"/></linearGradient></defs>
+  <rect width="2100" height="900" fill="url(#g)"/>
+  <g stroke="#fff" stroke-opacity="0.25" stroke-width="4">
+    <line x1="700" y1="0" x2="700" y2="900"/><line x1="1400" y1="0" x2="1400" y2="900"/>
+    <line x1="0" y1="300" x2="2100" y2="300"/><line x1="0" y1="600" x2="2100" y2="600"/>
+  </g>
+  <rect x="12" y="12" width="2076" height="876" fill="none" stroke="#fff" stroke-width="24"/>
+  <g fill="#fff"><circle cx="90" cy="90" r="40"/><circle cx="2010" cy="90" r="40"/><circle cx="90" cy="810" r="40"/><circle cx="2010" cy="810" r="40"/></g>
+  <text x="50%" y="48%" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="110" fill="#fff">21:9 panorama</text>
+  <text x="50%" y="58%" text-anchor="middle" font-family="Arial, sans-serif" font-size="56" fill="#fff" fill-opacity="0.85">2100 × 900 example</text>
+</svg>

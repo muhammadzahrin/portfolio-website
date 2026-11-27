@@ -75,7 +75,7 @@ export function GalleryViewer({ slides, start, label, onClose }: GalleryViewerPr
   if (!current) return null;
 
   return (
-    <BlackGlassDialog label={label} onClose={onClose} centered>
+    <BlackGlassDialog label={label} onClose={onClose} centered className="viewer-fill">
       {/* 4:3 frame (most photos are 4:3), narrowed on short screens so it and the thumbnails fit */}
       <div className="w-[min(92vw,960px,calc((100dvh_-_13rem)*4/3))]">
         <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-black">
