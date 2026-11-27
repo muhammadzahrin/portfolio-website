@@ -142,20 +142,20 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
         <div key={current._id} className="xmb-details xmb-fade flex-1 min-w-0 flex flex-col pl-1 sm:pl-2 pb-4">
           <div className="min-h-0 flex flex-col overflow-hidden rounded-2xl glass-surface border border-sky-400/20 p-4 sm:p-6">
             <Heading item={current} pulse />
-            <div
-              ref={textRef}
-              className={`mt-4 min-h-0 overflow-hidden ${clipped ? '[mask-image:linear-gradient(to_bottom,black_70%,transparent)]' : ''}`}
-            >
-              {slides.length > 0 && (
-                // Laptops: on the left (4:3, the shape of most photos), with the text running down
-                // its right side and on below it
+            {slides.length > 0 && (
+              <div className="xmb-gallery mt-4 flex justify-center">
                 <Slideshow
                   slides={slides}
                   label={`${current.organisation} photos`}
                   onOpen={setViewing}
-                  className="mb-4 aspect-[2/1] lg:aspect-[4/3] lg:float-left lg:w-1/2 lg:mr-5 lg:mb-2"
+                  className="w-full max-w-full aspect-[2/1] lg:w-auto lg:h-full"
                 />
-              )}
+              </div>
+            )}
+            <div
+              ref={textRef}
+              className={`mt-4 min-h-0 overflow-hidden ${clipped ? '[mask-image:linear-gradient(to_bottom,black_70%,transparent)]' : ''}`}
+            >
               <Paragraphs item={current} />
             </div>
             {clipped && (

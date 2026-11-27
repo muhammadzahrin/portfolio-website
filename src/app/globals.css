@@ -1017,6 +1017,20 @@ html.case-open main .glass-card-surface:not(.viewer-spotlight *) {
   }
 }
 
+/* Phones: the slideshow is as wide as the panel */
+.xmb-gallery {
+  flex-shrink: 0;
+}
+
+/* Laptops: the slideshow takes the height the text leaves free (up to 300px) and stays centred, so
+   the text fits without Read more. The huge shrink factor makes it give way before the text does. */
+@media (min-width: 1024px) {
+  .xmb-gallery {
+    flex: 0 1000 300px;
+    min-height: 120px;
+  }
+}
+
 /* Page scroll drives the menu: it snaps to one stop per entry, and to the bottom for the footer */
 html:has(.xmb-track) {
   scroll-snap-type: y mandatory;
