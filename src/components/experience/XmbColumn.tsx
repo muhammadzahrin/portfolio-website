@@ -143,12 +143,14 @@ export function XmbColumn({ items }: { items: WorkExperience[] }) {
           <div className="min-h-0 flex flex-col overflow-hidden rounded-2xl glass-surface border border-sky-400/20 p-4 sm:p-6">
             <Heading item={current} pulse />
             {slides.length > 0 && (
-              <Slideshow
-                slides={slides}
-                label={`${current.organisation} photos`}
-                onOpen={setViewing}
-                className="mt-4 shrink-0 aspect-[2/1]"
-              />
+              <div className="xmb-gallery mt-4 flex justify-center">
+                <Slideshow
+                  slides={slides}
+                  label={`${current.organisation} photos`}
+                  onOpen={setViewing}
+                  className="w-full max-w-full aspect-[2/1] lg:w-auto lg:h-full"
+                />
+              </div>
             )}
             <div
               ref={textRef}

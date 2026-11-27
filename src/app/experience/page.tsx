@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function ExperiencePage() {
   return (
-    // Narrower than other pages so each paragraph wraps to a few comfortable lines
-    <div className="xmb max-w-2xl mx-auto px-3 sm:px-4">
+    // Same width as the other pages
+    <div className="xmb max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">
       <h1 className="sr-only">Experience</h1>
       <XmbColumn items={workExperiences} />
     </div>
