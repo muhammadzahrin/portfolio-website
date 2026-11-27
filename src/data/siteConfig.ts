@@ -8,12 +8,13 @@ export const siteConfig: SiteConfig = {
   tagline: 'Making software and games!',
   shortBioIntro:
     'Hi, I’m Zahrin. Currently pursuing my Diploma in Information Technology at UniKL MIIT, interning at SD Guthrie Berhad, and passionate about Malaysian game development.',
-  contactEmail: 'zahrin.zamri@example.com', // Placeholder email
+  contactEmail: 'zahrin.contact@gmail.com',
   socials: {
-    email: 'mailto:zahrin.zamri@example.com',
-    linkedin: 'https://linkedin.com/in/zahrin-zamri-placeholder',
+    email: 'mailto:zahrin.contact@gmail.com',
+    linkedin: 'https://www.linkedin.com/in/muhammad-zahrin-124a452ba/',
     github: 'https://github.com/muhammadzahrin',
-    youtube: 'https://youtube.com/@zahrin-placeholder',
+    youtube: 'https://www.youtube.com/@spongebear',
+    itch: 'https://spongebear.itch.io/',
   },
   navItems: [
     {

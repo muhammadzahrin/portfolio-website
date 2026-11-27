@@ -14,6 +14,7 @@ export interface SocialLinks {
   linkedin: string;
   github: string;
   youtube: string;
+  itch: string;
 }
 
 export interface SiteConfig {
